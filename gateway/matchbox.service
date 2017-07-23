@@ -8,9 +8,7 @@ Environment="VERSION=v0.6.0"
 Environment="MATCHBOX_ADDRESS=0.0.0.0:8080"
 Environment="REPO=https://github.com/alexisvincent/steve-cluster"
 Environment="CONFIG_PATH=/etc/steve-cluster"
-ExecStartPre=if [ -d ${CONFIG_PATH} ] ;\
-    then 1 ;\
-    else /usr/bin/git clone ${REPO} ${CONFIG_PATH}
+ExecStartPre=-/usr/bin/git clone ${REPO} ${CONFIG_PATH}
 ExecStart=/usr/bin/rkt run \
   --net=host \
   --inherit-env \

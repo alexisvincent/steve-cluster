@@ -7,7 +7,7 @@ Environment="IMAGE=quay.io/coreos/matchbox"
 Environment="VERSION=v0.6.0"
 Environment="MATCHBOX_ADDRESS=0.0.0.0:8080"
 Environment="REPO=https://github.com/alexisvincent/steve-cluster"
-Environment="CONFIG_PATH=/etc/steve-cluster/gateway"
+Environment="CONFIG_PATH=/etc/steve-cluster"
 ExecStartPre=-/usr/bin/git clone ${REPO} ${CONFIG_PATH}
 ExecStart=/usr/bin/rkt run \
   --net=host \
@@ -15,8 +15,8 @@ ExecStart=/usr/bin/rkt run \
   --trust-keys-from-https \
   --mount volume=data,target=/var/lib/matchbox \
   --mount volume=config,target=/etc/matchbox \
-  --volume data,kind=host,source=${CONFIG_PATH}/matchbox \
-  --volume config,kind=host,source=${CONFIG_PATH}/matchbox/etc \
+  --volume data,kind=host,source=${CONFIG_PATH}/gateway/matchbox \
+  --volume config,kind=host,source=${CONFIG_PATH}/gateway/matchbox/etc \
   ${IMAGE}:${VERSION}
 
 [Install]

@@ -16,7 +16,7 @@ ExecStart=/usr/bin/rkt run \
   --mount volume=data,target=/var/lib/matchbox \
   --mount volume=config,target=/etc/matchbox \
   --volume data,kind=host,source=${CONFIG_PATH}/matchbox \
-  --volume config,kind=host,source=${CONFIG_PATH}/etc/matchbox \
+  --volume config,kind=host,source=${CONFIG_PATH}/matchbox/etc \
   ${IMAGE}:${VERSION}
 
 [Install]

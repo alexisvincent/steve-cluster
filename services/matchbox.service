@@ -12,7 +12,8 @@ ExecStart=/usr/bin/docker run --net=host \
   ${IMAGE}:${VERSION} \
     -address=0.0.0.0:8080 \
     -rpc-address=0.0.0.0:8081 \
-    -log-level=debug
+    -log-level=debug \
+    -assets-path=/etc/matchbox/examples/assets
 
 [Install]
 WantedBy=multi-user.target

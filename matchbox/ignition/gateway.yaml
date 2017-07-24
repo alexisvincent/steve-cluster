@@ -1,7 +1,3 @@
-# This config is meant to be consumed by the config transpiler, which will
-# generate the corresponding Ignition config. Do not pass this config directly
-# to instances of Container Linux.
-
 passwd:
   users:
     - name: alexisvincent
@@ -46,6 +42,28 @@ systemd:
           --log-queries \
           --log-dhcp
         ExecStop=/usr/bin/docker stop dnsmasq1
+
+        [Install]
+        WantedBy=multi-user.target
+
+    - name: 20-matchbox.service
+      enable: true
+      contents: |
+        [Unit]
+        Description=CoreOS matchbox Server
+        Documentation=https://github.com/coreos/matchbox
+
+        [Service]
+        Environment="IMAGE=quay.io/coreos/matchbox"
+        Environment="VERSION=v0.6.0"
+        Environment="REPO_PATH=/home/core/steve-cluster"
+        ExecStart=/usr/bin/docker run --net=host \
+          -v ${REPO_PATH}/matchbox:/var/lib/matchbox:Z \
+          -v ${REPO_PATH}/matchbox/etc:/etc/matchbox:Z,ro \
+          ${IMAGE}:${VERSION} \
+            -address=0.0.0.0:8080 \
+            -rpc-address=0.0.0.0:8081 \
+            -log-level=debug
 
         [Install]
         WantedBy=multi-user.target

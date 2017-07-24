@@ -1,0 +1,8 @@
+{
+  "id": "gateway",
+  "name": "Gateway Node",
+  "profile": "gateway",
+  "selector": {
+    "mac": "00:0c:29:3c:5b:44"
+  }
+}

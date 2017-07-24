@@ -1,0 +1,1 @@
+curl https://raw.githubusercontent.com/coreos/matchbox/master/scripts/get-coreos | bash 

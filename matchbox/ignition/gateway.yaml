@@ -33,6 +33,46 @@ networkd:
 
 systemd:
   units:
+    - name: cluster-config.service
+      enable: true
+      contents: |
+        [Unit]
+        Description=Download the github repository containing cluster config
+
+        [Service]
+        ExecStartPre=-/usr/bin/git clone https://github.com/alexisvincent/steve-cluster /etc/cluster-config
+        ExecStart=/usr/bin/git -C /etc/cluster-config pull
+        Restart=never
+
+        [Install]
+        WantedBy=multi-user.target
+
+    - name: matchbox.service
+      enable: true
+      contents: |
+        [Unit]
+        Description=CoreOS matchbox Server
+        After=docker.service
+        Requires=docker.service
+        After=cluster-config.service
+        Requires=cluster-config.service
+
+        [Service]
+        Environment="IMAGE=quay.io/coreos/matchbox"
+        Environment="VERSION=v0.6.0"
+        Environment="REPO_PATH=/etc/cluster-config"
+        ExecStart=/usr/bin/docker run --net=host \
+          -v ${REPO_PATH}/matchbox:/var/lib/matchbox:Z \
+          -v ${REPO_PATH}/matchbox/etc:/etc/matchbox:Z,ro \
+          ${IMAGE}:${VERSION} \
+            -address=0.0.0.0:8080 \
+            -rpc-address=0.0.0.0:8081 \
+            -log-level=debug \
+            -assets-path=/var/lib/matchbox/examples/assets
+
+        [Install]
+        WantedBy=multi-user.target
+
     - name: dnsmasq.service
       enable: true
       contents: |
@@ -40,6 +80,8 @@ systemd:
         Description=Run dnsmasq, providing dhcp, dns and network book
         After=docker.service
         Requires=docker.service
+        After=matchbox.service
+        Requires=matchbox.service
 
         [Service]
         ExecStartPre=-/usr/bin/docker kill dnsmasq1
@@ -56,29 +98,6 @@ systemd:
           --log-queries \
           --log-dhcp
         ExecStop=/usr/bin/docker stop dnsmasq1
-
-        [Install]
-        WantedBy=multi-user.target
-
-    - name: matchbox.service
-      enable: true
-      contents: |
-        [Unit]
-        Description=CoreOS matchbox Server
-        Documentation=https://github.com/coreos/matchbox
-
-        [Service]
-        Environment="IMAGE=quay.io/coreos/matchbox"
-        Environment="VERSION=v0.6.0"
-        Environment="REPO_PATH=/home/core/steve-cluster"
-        ExecStart=/usr/bin/docker run --net=host \
-          -v ${REPO_PATH}/matchbox:/var/lib/matchbox:Z \
-          -v ${REPO_PATH}/matchbox/etc:/etc/matchbox:Z,ro \
-          ${IMAGE}:${VERSION} \
-            -address=0.0.0.0:8080 \
-            -rpc-address=0.0.0.0:8081 \
-            -log-level=debug \
-            -assets-path=/var/lib/matchbox/examples/assets
 
         [Install]
         WantedBy=multi-user.target

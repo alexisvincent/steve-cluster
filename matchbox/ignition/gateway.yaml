@@ -38,11 +38,13 @@ systemd:
       contents: |
         [Unit]
         Description=Download the github repository containing cluster config
+        Requires=network-online.target
+        After=network-online.target
 
         [Service]
         ExecStartPre=-/usr/bin/git clone https://github.com/alexisvincent/steve-cluster /etc/cluster-config
         ExecStart=/usr/bin/git -C /etc/cluster-config pull
-        Restart=never
+        Restart=no
 
         [Install]
         WantedBy=multi-user.target
@@ -52,10 +54,8 @@ systemd:
       contents: |
         [Unit]
         Description=CoreOS matchbox Server
-        After=docker.service
-        Requires=docker.service
-        After=cluster-config.service
-        Requires=cluster-config.service
+        After=docker.service cluster-config.service
+        Requires=docker.service cluster-config.service
 
         [Service]
         Environment="IMAGE=quay.io/coreos/matchbox"

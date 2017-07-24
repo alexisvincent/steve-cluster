@@ -5,7 +5,7 @@ Documentation=https://github.com/coreos/matchbox
 [Service]
 Environment="IMAGE=quay.io/coreos/matchbox"
 Environment="VERSION=v0.6.0"
-Environment="REPO_PATH=/home/core/steve-cluster"
+Environment="REPO_PATH=/etc/cluster-config"
 ExecStart=/usr/bin/docker run --net=host \
   -v ${REPO_PATH}/matchbox:/var/lib/matchbox:Z \
   -v ${REPO_PATH}/matchbox/etc:/etc/matchbox:Z,ro \

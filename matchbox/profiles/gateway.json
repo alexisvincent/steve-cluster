@@ -7,8 +7,6 @@
     "args": [
       "coreos.config.url=http://matchbox.example:8080/ignition?uuid=${uuid}&mac=${mac:hexhyp}",
       "coreos.first_boot=yes",
-      "console=tty0",
-      "console=ttyS0",
       "coreos.autologin"
     ]
   },

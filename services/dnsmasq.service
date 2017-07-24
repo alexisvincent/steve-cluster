@@ -13,7 +13,7 @@ ExecStart=/usr/bin/docker run --name=dnsmasq1 --cap-add=NET_ADMIN --net=host qua
   --enable-tftp --tftp-root=/var/lib/tftpboot \
   --dhcp-userclass=set:ipxe,iPXE \
   --dhcp-boot=tag:#ipxe,undionly.kpxe \
-  --dhcp-boot=tag:ipxe,http://matchbox.cluster.com:8080/boot.ipxe \
+  --dhcp-boot=tag:ipxe,http://matchbox.cluster:8080/boot.ipxe \
   --address=/matchbox.cluster/10.10.0.2 \
   --log-queries \
   --log-dhcp

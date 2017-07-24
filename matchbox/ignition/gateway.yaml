@@ -94,7 +94,7 @@ systemd:
           --dhcp-userclass=set:ipxe,iPXE \
           --dhcp-boot=tag:#ipxe,undionly.kpxe \
           --dhcp-boot=tag:ipxe,http://matchbox.cluster:8080/boot.ipxe \
-          --address=/matchbox.cluster/10.10.0.2 \
+          --address=/matchbox.cluster/10.10.0.1 \
           --log-queries \
           --log-dhcp
         ExecStop=/usr/bin/docker stop dnsmasq1

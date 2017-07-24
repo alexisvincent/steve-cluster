@@ -1,5 +1,5 @@
-cp ./dnsmasq.service /etc/systemd/system/dnsmasq.service
-cp ./matchbox.service /etc/systemd/system/matchbox.service
+sudo cp ./dnsmasq.service /etc/systemd/system/dnsmasq.service
+sudo cp ./matchbox.service /etc/systemd/system/matchbox.service
 
 sudo systemctl daemon-reload
 sudo systemctl stop dnsmasq

@@ -43,8 +43,28 @@ systemd:
 
         [Service]
         ExecStartPre=-/usr/bin/git clone https://github.com/alexisvincent/steve-cluster /etc/cluster-config
-        ExecStart=/usr/bin/git -C /etc/cluster-config pull
+        # ExecStart=/usr/bin/git -C /etc/cluster-config pull
         Restart=no
+
+        [Install]
+        WantedBy=multi-user.target
+
+    - name: pynetkey.service
+      enable: true
+      contents: |
+        [Unit]
+        Description=Open pynetkey to enable internet access
+        After=docker.service network-online.target
+        Requires=docker.service network-online.target
+
+        [Service]
+        ExecStartPre=-/usr/bin/docker kill pynetkey
+        ExecStartPre=-/usr/bin/docker rm pynetkey
+        ExecStartPre=/usr/bin/docker pull alexisvincent/pynetkey
+        ExecStart=/usr/bin/docker run \
+          --name=pynetkey --net=host -v /etc/cluster-config/private/pynetkey.config:/etc/pynetkey.config \
+          alexisvincent/pynetkey -c /etc/pynetkey.config
+        ExecStop=/usr/bin/docker stop pynetkey
 
         [Install]
         WantedBy=multi-user.target
@@ -61,7 +81,10 @@ systemd:
         Environment="IMAGE=quay.io/coreos/matchbox"
         Environment="VERSION=v0.6.0"
         Environment="REPO_PATH=/etc/cluster-config"
-        ExecStart=/usr/bin/docker run --net=host \
+        ExecStartPre=-/usr/bin/docker kill matchbox
+        ExecStartPre=-/usr/bin/docker rm matchbox
+        ExecStartPre=/usr/bin/docker pull ${IMAGE}:${VERSION}
+        ExecStart=/usr/bin/docker run --name=matchbox --net=host \
           -v ${REPO_PATH}/matchbox:/var/lib/matchbox:Z \
           -v ${REPO_PATH}/matchbox/etc:/etc/matchbox:Z,ro \
           ${IMAGE}:${VERSION} \
@@ -69,9 +92,8 @@ systemd:
             -rpc-address=0.0.0.0:8081 \
             -log-level=debug \
             -assets-path=/var/lib/matchbox/examples/assets
-        WorkingDirectory=/etc/cluster-config/matchbox
-        ExecStartPost=/usr/bin/bash /etc/cluster-config/matchbox/get-coreos.sh
-
+        ExecStop=/usr/bin/docker stop matchbox
+        
         [Install]
         WantedBy=multi-user.target
 

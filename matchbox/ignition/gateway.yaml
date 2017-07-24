@@ -51,8 +51,8 @@ systemd:
           --enable-tftp --tftp-root=/var/lib/tftpboot \
           --dhcp-userclass=set:ipxe,iPXE \
           --dhcp-boot=tag:#ipxe,undionly.kpxe \
-          --dhcp-boot=tag:ipxe,http://matchbox.example.com:8080/boot.ipxe \
-          --address=/matchbox.example/10.10.0.1 \
+          --dhcp-boot=tag:ipxe,http://matchbox.cluster:8080/boot.ipxe \
+          --address=/matchbox.cluster/10.10.0.1 \
           --log-queries \
           --log-dhcp
         ExecStop=/usr/bin/docker stop dnsmasq1

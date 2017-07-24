@@ -70,7 +70,7 @@ systemd:
             -log-level=debug \
             -assets-path=/var/lib/matchbox/examples/assets
         WorkingDirectory=/etc/cluster-config/matchbox
-        ExecStartPost=/etc/cluster-config/matchbox/get-coreos.sh
+        ExecStartPost=/usr/bin/bash /etc/cluster-config/matchbox/get-coreos.sh
 
         [Install]
         WantedBy=multi-user.target

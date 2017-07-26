@@ -4,17 +4,17 @@ After=docker.service cluster-config.service
 Requires=docker.service cluster-config.service
 
 [Service]
-Environment="MATCHBOX_VERSION=v0.6.0"
 Environment="MATCHBOX_PATH=/etc/cluster-config/matchbox"
+Environment="MATCHBOX_IMAGE=quay.io/coreos/matchbox"
 ExecStartPre=-/usr/bin/docker kill matchbox
 ExecStartPre=-/usr/bin/docker rm matchbox
-ExecStartPre=/usr/bin/docker pull ${IMAGE}:${VERSION}
+ExecStartPre=/usr/bin/docker pull ${MATCHBOX_IMAGE}}:0.6.0
 ExecStart=/usr/bin/docker run --name=matchbox --net=host \
   -v ${MATCHBOX_PATH}:/var/lib/matchbox:Z \
   -v ${MATCHBOX_PATH}/etc:/etc/matchbox:Z,ro \
-  quay.io/coreos/matchbox:${MATCHBOX_VERSION} \
-    -address=10.10.0.2:8080 \
-    -rpc-address=10.10.0.2:8081 \
+  quay.io/coreos/matchbox:0.6.0 \
+    -address=10.10.255.255:8080 \
+    -rpc-address=10.10.255.255:8081 \
     -log-level=debug \
     -assets-path=/var/lib/matchbox/assets
 ExecStop=/usr/bin/docker stop matchbox

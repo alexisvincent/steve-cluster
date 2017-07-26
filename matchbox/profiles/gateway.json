@@ -9,7 +9,8 @@
       "coreos.first_boot=yes",
       "coreos.autologin",
 
-      "address.internal={|network.gateway.address.internal|}",
+      "interface={|network.gateway.interface.internal|}",
+      "address={|network.gateway.address.internal|}",
       "hostname={|network.gateway.hostname|}"
     ]
   },

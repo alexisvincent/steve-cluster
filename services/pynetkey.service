@@ -7,8 +7,8 @@ Requires=docker.service network-online.target
 ExecStartPre=-/usr/bin/docker kill pynetkey
 ExecStartPre=-/usr/bin/docker rm pynetkey
 ExecStartPre=/usr/bin/docker pull alexisvincent/pynetkey
-ExecStart=/usr/bin/echo  | /usr/bin/docker run \
-  --name=pynetkey -i alexisvincent/pynetkey -u 
+ExecStart=/usr/bin/echo --- | /usr/bin/docker run \
+  --name=pynetkey -i alexisvincent/pynetkey -u ---
 ExecStop=/usr/bin/docker stop pynetkey
 
 [Install]

@@ -28,7 +28,7 @@ networkd:
 
         [Network]
         DNS={{address.internal}}
-        Address={{address.internal}}/{|network.subnet.short|}
+        Address={{address.internal}}/16
         Gateway=192.168.1.1/24
 
 systemd:
@@ -60,8 +60,8 @@ systemd:
         ExecStartPre=-/usr/bin/docker kill pynetkey
         ExecStartPre=-/usr/bin/docker rm pynetkey
         ExecStartPre=/usr/bin/docker pull alexisvincent/pynetkey
-        ExecStart=/usr/bin/echo {|pynetkey.password|} | /usr/bin/docker run \
-          --name=pynetkey -i alexisvincent/pynetkey -u {|pynetkey.username|}
+        ExecStart=/usr/bin/echo --- | /usr/bin/docker run \
+          --name=pynetkey -i alexisvincent/pynetkey -u ---
         ExecStop=/usr/bin/docker stop pynetkey
 
         [Install]
@@ -80,11 +80,11 @@ systemd:
         Environment="MATCHBOX_IMAGE=quay.io/coreos/matchbox"
         ExecStartPre=-/usr/bin/docker kill matchbox
         ExecStartPre=-/usr/bin/docker rm matchbox
-        ExecStartPre=/usr/bin/docker pull ${MATCHBOX_IMAGE}}:{|matchbox.version|}
+        ExecStartPre=/usr/bin/docker pull ${MATCHBOX_IMAGE}}:0.6.0
         ExecStart=/usr/bin/docker run --name=matchbox --net=host \
           -v ${MATCHBOX_PATH}:/var/lib/matchbox:Z \
           -v ${MATCHBOX_PATH}/etc:/etc/matchbox:Z,ro \
-          quay.io/coreos/matchbox:{|matchbox.version|} \
+          quay.io/coreos/matchbox:0.6.0 \
             -address={{address.internal}}:8080 \
             -rpc-address={{address.internal}}:8081 \
             -log-level=debug \
@@ -104,13 +104,13 @@ systemd:
 
         [Service]
         Environment="IMAGE=quay.io/coreos/matchbox"
-        Environment="FQDOMAIN={{hostname}}.{|network.domain|}"
+        Environment="FQDOMAIN={{hostname}}.steve"
         ExecStartPre=-/usr/bin/docker kill dnsmasq
         ExecStartPre=-/usr/bin/docker rm dnsmasq
         ExecStartPre=/usr/bin/docker pull ${IMAGE}
         ExecStart=/usr/bin/docker run --name=dnsmasq --cap-add=NET_ADMIN --net=host ${IMAGE} -d -q \
           --interface={{interface.internal}} \
-          --dhcp-range={{interface.internal}},{|network.dhcp.start|},{|network.dhcp.end|},12h \
+          --dhcp-range={{interface.internal}},10.10.0.50,10.10.0.100,12h \
           --enable-tftp --tftp-root=/var/lib/tftpboot \
           --dhcp-userclass=set:ipxe,iPXE \
           --dhcp-boot=tag:#ipxe,undionly.kpxe \

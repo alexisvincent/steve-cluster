@@ -4,17 +4,19 @@ After=docker.service matchbox.service
 Requires=docker.service matchbox.service
 
 [Service]
+Environment="IMAGE=quay.io/coreos/matchbox"
+Environment="FQDOMAIN=bootstrapper.steve"
 ExecStartPre=-/usr/bin/docker kill dnsmasq
 ExecStartPre=-/usr/bin/docker rm dnsmasq
-ExecStartPre=/usr/bin/docker pull quay.io/coreos/dnsmasq
-ExecStart=/usr/bin/docker run --name=dnsmasq --cap-add=NET_ADMIN --net=host quay.io/coreos/dnsmasq -d -q \
-  --interface=ens34 \
-  --dhcp-range=ens34,10.10.0.20,10.10.0.50,12h \
+ExecStartPre=/usr/bin/docker pull ${IMAGE}
+ExecStart=/usr/bin/docker run --name=dnsmasq --cap-add=NET_ADMIN --net=host ${IMAGE} -d -q \
+  --interface=ens4 \
+  --dhcp-range=ens4,10.10.0.50,10.10.0.100,12h \
   --enable-tftp --tftp-root=/var/lib/tftpboot \
   --dhcp-userclass=set:ipxe,iPXE \
   --dhcp-boot=tag:#ipxe,undionly.kpxe \
-  --dhcp-boot=tag:ipxe,http://gateway_temp.steve:8080/boot.ipxe \
-  --address=/gateway_temp.steve/10.10.0.2 \
+  --dhcp-boot=tag:ipxe,http://${FQDOMAIN}:8080/boot.ipxe \
+  --address=/${FQDOMAIN}/10.10.255.255 \
   --log-queries \
   --log-dhcp
 ExecStop=/usr/bin/docker stop dnsmasq

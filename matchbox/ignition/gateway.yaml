@@ -24,11 +24,11 @@ networkd:
     - name: gateway.network
       contents: |
         [Match]
-        Name=ens34
+        Name={{network.gateway.interface}}
 
         [Network]
-        DNS=10.10.0.1
-        Address=10.10.0.1/16
+        DNS={{network.gateway.address}}
+        Address={{network.gateway.address}}/{{network.subnet.short}}
         Gateway=192.168.1.1/24
 
 systemd:
@@ -42,8 +42,7 @@ systemd:
         After=network-online.target
 
         [Service]
-        ExecStartPre=-/usr/bin/git clone https://github.com/alexisvincent/steve-cluster /etc/cluster-config
-        # ExecStart=/usr/bin/git -C /etc/cluster-config pull
+        ExecStartPre=-/usr/bin/git clone https://github.com/alexisvincent/steve-cluster-config /etc/cluster-config
         Restart=no
 
         [Install]
@@ -61,9 +60,8 @@ systemd:
         ExecStartPre=-/usr/bin/docker kill pynetkey
         ExecStartPre=-/usr/bin/docker rm pynetkey
         ExecStartPre=/usr/bin/docker pull alexisvincent/pynetkey
-        ExecStart=/usr/bin/docker run \
-          --name=pynetkey --net=host -v /etc/cluster-config/private/pynetkey.config:/etc/pynetkey.config \
-          alexisvincent/pynetkey -c /etc/pynetkey.config
+        ExecStart=/usr/bin/echo {|pynetkey.password|} | /usr/bin/docker run \
+          --name=pynetkey -i alexisvincent/pynetkey -u {|pynetkey.username|}
         ExecStop=/usr/bin/docker stop pynetkey
 
         [Install]
@@ -78,20 +76,19 @@ systemd:
         Requires=docker.service cluster-config.service
 
         [Service]
-        Environment="IMAGE=quay.io/coreos/matchbox"
-        Environment="VERSION=v0.6.0"
-        Environment="REPO_PATH=/etc/cluster-config"
+        Environment="MATCHBOX_PATH=/etc/cluster-config/matchbox"
+        Environment="MATCHBOX_IMAGE=quay.io/coreos/matchbox"
         ExecStartPre=-/usr/bin/docker kill matchbox
         ExecStartPre=-/usr/bin/docker rm matchbox
-        ExecStartPre=/usr/bin/docker pull ${IMAGE}:${VERSION}
+        ExecStartPre=/usr/bin/docker pull ${MATCHBOX_IMAGE}}:{|matchbox.version|}
         ExecStart=/usr/bin/docker run --name=matchbox --net=host \
-          -v ${REPO_PATH}/matchbox:/var/lib/matchbox:Z \
-          -v ${REPO_PATH}/matchbox/etc:/etc/matchbox:Z,ro \
-          ${IMAGE}:${VERSION} \
-            -address=0.0.0.0:8080 \
-            -rpc-address=0.0.0.0:8081 \
+          -v ${MATCHBOX_PATH}:/var/lib/matchbox:Z \
+          -v ${MATCHBOX_PATH}/etc:/etc/matchbox:Z,ro \
+          quay.io/coreos/matchbox:{|matchbox.version|} \
+            -address={{network.internal.address}}:8080 \
+            -rpc-address={{network.internal.address}}:8081 \
             -log-level=debug \
-            -assets-path=/var/lib/matchbox/examples/assets
+            -assets-path=/var/lib/matchbox/assets
         ExecStop=/usr/bin/docker stop matchbox
         
         [Install]
@@ -106,17 +103,19 @@ systemd:
         Requires=docker.service matchbox.service
 
         [Service]
+        Environment="IMAGE=quay.io/coreos/matchbox"
+        Environment="FQDOMAIN={{network.internal.hostname}}.{|network.domain|}"
         ExecStartPre=-/usr/bin/docker kill dnsmasq
         ExecStartPre=-/usr/bin/docker rm dnsmasq
-        ExecStartPre=/usr/bin/docker pull quay.io/coreos/dnsmasq
-        ExecStart=/usr/bin/docker run --name=dnsmasq --cap-add=NET_ADMIN --net=host quay.io/coreos/dnsmasq -d -q \
-          --interface={{gateway_interface}} \
-          --dhcp-range={{gateway_interface}},10.10.0.20,10.10.0.50,12h \
+        ExecStartPre=/usr/bin/docker pull ${IMAGE}
+        ExecStart=/usr/bin/docker run --name=dnsmasq --cap-add=NET_ADMIN --net=host ${IMAGE} -d -q \
+          --interface={{network.internal.interface}} \
+          --dhcp-range={{network.internal.interface}},{|network.dhcp.start|},{|network.dhcp.end|},12h \
           --enable-tftp --tftp-root=/var/lib/tftpboot \
           --dhcp-userclass=set:ipxe,iPXE \
           --dhcp-boot=tag:#ipxe,undionly.kpxe \
-          --dhcp-boot=tag:ipxe,http://gateway.steve:8080/boot.ipxe \
-          --address=/{{gateway_hostname}}/{{gateway_address}} \
+          --dhcp-boot=tag:ipxe,http://${FQDOMAIN}:8080/boot.ipxe \
+          --address=/${FQDOMAIN}/{{network.internal.address}} \
           --log-queries \
           --log-dhcp
         ExecStop=/usr/bin/docker stop dnsmasq

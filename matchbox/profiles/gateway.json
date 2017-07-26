@@ -2,17 +2,16 @@
   "id": "gateway",
   "name": "Bootstrap Provisioner Node",
   "boot": {
-    "kernel": "/assets/coreos/1409.7.0/coreos_production_pxe.vmlinuz",
-    "initrd": ["/assets/coreos/1409.7.0/coreos_production_pxe_image.cpio.gz"],
+    "kernel": "/assets/coreos/{|coreos.version|}/coreos_production_pxe.vmlinuz",
+    "initrd": ["/assets/coreos/{|coreos.version|}/coreos_production_pxe_image.cpio.gz"],
     "args": [
-      "coreos.config.url=http://matchbox.cluster:8080/ignition?uuid=${uuid}&mac=${mac:hexhyp}",
+      "coreos.config.url=http://{|network.gateway.hostname|}.{|network.domain|}:8080/ignition?uuid=${uuid}&mac=${mac:hexhyp}",
       "coreos.first_boot=yes",
       "coreos.autologin",
 
-      "gateway_interface=ens34",
-      "gateway_address=10.10.0.1",
-      "gateway_hostname=gateway.steve"
+      "address.internal={|network.gateway.address.internal|}",
+      "hostname={|network.gateway.hostname|}"
     ]
   },
-  "ignition_id": "gateway.yaml"
+  "ignition_id": "gateway.gen.yaml"
 }

@@ -4,8 +4,7 @@ Requires=network-online.target
 After=network-online.target
 
 [Service]
-ExecStartPre=-/usr/bin/git clone https://github.com/alexisvincent/steve-cluster /etc/cluster-config
-# ExecStart=/usr/bin/git -C /etc/cluster-config pull
+ExecStartPre=-/usr/bin/git clone https://github.com/alexisvincent/steve-cluster-config /etc/cluster-config
 Restart=no
 
 [Install]

@@ -77,14 +77,13 @@ systemd:
 
         [Service]
         Environment="MATCHBOX_PATH=/etc/cluster-config/matchbox"
-        Environment="MATCHBOX_IMAGE=quay.io/coreos/matchbox"
         ExecStartPre=-/usr/bin/docker kill matchbox
         ExecStartPre=-/usr/bin/docker rm matchbox
-        ExecStartPre=/usr/bin/docker pull ${MATCHBOX_IMAGE}:{|matchbox.version|}
+        ExecStartPre=/usr/bin/docker pull quay.io/coreos/matchbox
         ExecStart=/usr/bin/docker run --name=matchbox --net=host \
           -v ${MATCHBOX_PATH}:/var/lib/matchbox:Z \
           -v ${MATCHBOX_PATH}/etc:/etc/matchbox:Z,ro \
-          quay.io/coreos/matchbox:{|matchbox.version|} \
+          quay.io/coreos/matchbox \
             -address={{address.internal}}:8080 \
             -rpc-address={{address.internal}}:8081 \
             -log-level=debug \

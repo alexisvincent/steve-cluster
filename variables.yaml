@@ -29,9 +29,6 @@ coreos:
     version: 1409.7.0
     channel: stable
 
-matchbox:
-    version: 0.6.0
-
 pynetkey:
     username: "---"
     password: "---"

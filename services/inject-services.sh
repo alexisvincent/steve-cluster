@@ -6,6 +6,6 @@ sudo systemctl daemon-reload
 sudo systemctl stop dnsmasq
 sudo systemctl stop matchbox
 sudo systemctl stop cluster-config
-sudo systemctl start dnsmasq
-sudo systemctl start matchbox
 sudo systemctl start cluster-config
+sudo systemctl start matchbox
+sudo systemctl start dnsmasq

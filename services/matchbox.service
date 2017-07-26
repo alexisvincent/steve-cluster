@@ -1,12 +1,16 @@
 [Unit]
 Description=CoreOS matchbox Server
-Documentation=https://github.com/coreos/matchbox
+After=docker.service cluster-config.service
+Requires=docker.service cluster-config.service
 
 [Service]
 Environment="IMAGE=quay.io/coreos/matchbox"
 Environment="VERSION=v0.6.0"
 Environment="REPO_PATH=/etc/cluster-config"
-ExecStart=/usr/bin/docker run --net=host \
+ExecStartPre=-/usr/bin/docker kill matchbox
+ExecStartPre=-/usr/bin/docker rm matchbox
+ExecStartPre=/usr/bin/docker pull ${IMAGE}:${VERSION}
+ExecStart=/usr/bin/docker run --name=matchbox --net=host \
   -v ${REPO_PATH}/matchbox:/var/lib/matchbox:Z \
   -v ${REPO_PATH}/matchbox/etc:/etc/matchbox:Z,ro \
   ${IMAGE}:${VERSION} \
@@ -14,6 +18,7 @@ ExecStart=/usr/bin/docker run --net=host \
     -rpc-address=0.0.0.0:8081 \
     -log-level=debug \
     -assets-path=/var/lib/matchbox/examples/assets
+ExecStop=/usr/bin/docker stop matchbox
 
 [Install]
 WantedBy=multi-user.target

@@ -1,0 +1,16 @@
+[Unit]
+Description=Open pynetkey to enable internet access
+After=docker.service network-online.target
+Requires=docker.service network-online.target
+
+[Service]
+ExecStartPre=-/usr/bin/docker kill pynetkey
+ExecStartPre=-/usr/bin/docker rm pynetkey
+ExecStartPre=/usr/bin/docker pull alexisvincent/pynetkey
+ExecStart=/usr/bin/docker run \
+  --name=pynetkey --net=host -v /etc/cluster-config/private/pynetkey.config:/etc/pynetkey.config \
+  alexisvincent/pynetkey -c /etc/pynetkey.config
+ExecStop=/usr/bin/docker stop pynetkey
+
+[Install]
+WantedBy=multi-user.target

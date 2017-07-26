@@ -110,13 +110,13 @@ systemd:
         ExecStartPre=-/usr/bin/docker rm dnsmasq
         ExecStartPre=/usr/bin/docker pull quay.io/coreos/dnsmasq
         ExecStart=/usr/bin/docker run --name=dnsmasq --cap-add=NET_ADMIN --net=host quay.io/coreos/dnsmasq -d -q \
-          --interface=ens34 \
-          --dhcp-range=ens34,10.10.0.20,10.10.0.50,12h \
+          --interface={{gateway_interface}} \
+          --dhcp-range={{gateway_interface}},10.10.0.20,10.10.0.50,12h \
           --enable-tftp --tftp-root=/var/lib/tftpboot \
           --dhcp-userclass=set:ipxe,iPXE \
           --dhcp-boot=tag:#ipxe,undionly.kpxe \
-          --dhcp-boot=tag:ipxe,http://matchbox.cluster:8080/boot.ipxe \
-          --address=/matchbox.cluster/10.10.0.1 \
+          --dhcp-boot=tag:ipxe,http://gateway.steve:8080/boot.ipxe \
+          --address=/{{gateway_hostname}}/{{gateway_address}} \
           --log-queries \
           --log-dhcp
         ExecStop=/usr/bin/docker stop dnsmasq

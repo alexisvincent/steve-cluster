@@ -1,23 +1,23 @@
 [Unit]
 Description=Run dnsmasq, providing dhcp, dns and network book
-After=docker.service
-Requires=docker.service
+After=docker.service matchbox.service
+Requires=docker.service matchbox.service
 
 [Service]
-ExecStartPre=-/usr/bin/docker kill dnsmasq1
-ExecStartPre=-/usr/bin/docker rm dnsmasq1
+ExecStartPre=-/usr/bin/docker kill dnsmasq
+ExecStartPre=-/usr/bin/docker rm dnsmasq
 ExecStartPre=/usr/bin/docker pull quay.io/coreos/dnsmasq
-ExecStart=/usr/bin/docker run --name=dnsmasq1 --cap-add=NET_ADMIN --net=host quay.io/coreos/dnsmasq -d -q \
-  --interface=ens37 \
-  --dhcp-range=ens37,10.10.0.20,10.10.0.50,12h \
+ExecStart=/usr/bin/docker run --name=dnsmasq --cap-add=NET_ADMIN --net=host quay.io/coreos/dnsmasq -d -q \
+  --interface=ens34 \
+  --dhcp-range=ens34,10.10.0.20,10.10.0.50,12h \
   --enable-tftp --tftp-root=/var/lib/tftpboot \
   --dhcp-userclass=set:ipxe,iPXE \
   --dhcp-boot=tag:#ipxe,undionly.kpxe \
-  --dhcp-boot=tag:ipxe,http://matchbox.cluster:8080/boot.ipxe \
-  --address=/matchbox.cluster/10.10.0.2 \
+  --dhcp-boot=tag:ipxe,http://gateway.steve:8080/boot.ipxe \
+  --address=/gateway_temp.steve/10.10.0.2 \
   --log-queries \
   --log-dhcp
-ExecStop=/usr/bin/docker stop dnsmasq1
+ExecStop=/usr/bin/docker stop dnsmasq
 
 [Install]
 WantedBy=multi-user.target

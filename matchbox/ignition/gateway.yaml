@@ -59,7 +59,7 @@ systemd:
         [Service]
         ExecStartPre=-/usr/bin/docker kill pynetkey
         ExecStartPre=-/usr/bin/docker rm pynetkey
-        ExecStartPre=/usr/bin/docker pull alexisvincent/pynetkey
+        ExecStartPre=/usr/bin/curl http://{|network.bootstrapper.hostname|}.{|network.domain|}/assets/pynetkey.tar | /usr/bin/docker load
         ExecStart=/usr/bin/echo {|pynetkey.password|} | /usr/bin/docker run \
           --name=pynetkey -i alexisvincent/pynetkey -u {|pynetkey.username|}
         ExecStop=/usr/bin/docker stop pynetkey

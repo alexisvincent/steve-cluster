@@ -24,11 +24,11 @@ networkd:
     - name: gateway.network
       contents: |
         [Match]
-        Name={{interface.internal}}
+        Name={|network.gateway.interface.internal|}
 
         [Network]
-        DNS={{address.internal}}
-        Address={{address.internal}}/{|network.subnet.short|}
+        DNS={|network.gateway.address.internal|}
+        Address={|network.gateway.address.internal|}/{|network.subnet.short|}
 
 systemd:
   units:
@@ -83,8 +83,8 @@ systemd:
           -v ${MATCHBOX_PATH}:/var/lib/matchbox:Z \
           -v ${MATCHBOX_PATH}/etc:/etc/matchbox:Z,ro \
           quay.io/coreos/matchbox \
-            -address={{address.internal}}:8080 \
-            -rpc-address={{address.internal}}:8081 \
+            -address={|network.gateway.address.internal|}:8080 \
+            -rpc-address={|network.gateway.address.internal|}:8081 \
             -log-level=debug \
             -assets-path=/var/lib/matchbox/assets
         ExecStop=/usr/bin/docker stop matchbox
@@ -102,19 +102,19 @@ systemd:
 
         [Service]
         Environment="IMAGE=quay.io/coreos/dnsmasq"
-        Environment="FQDOMAIN={{hostname}}.{|network.domain|}"
+        Environment="FQDOMAIN={|network.gateway.hostname|}.{|network.domain|}"
         ExecStartPre=-/usr/bin/docker kill dnsmasq
         ExecStartPre=-/usr/bin/docker rm dnsmasq
         ExecStartPre=/usr/bin/docker pull ${IMAGE}
         ExecStart=/usr/bin/docker run --name=dnsmasq --cap-add=NET_ADMIN --net=host ${IMAGE} -d -q \
-          --interface={{interface.internal}} \
-          --dhcp-option=3,{{address.internal}} \
-          --dhcp-range={{interface.internal}},{|network.dhcp.start|},{|network.dhcp.end|},12h \
+          --interface={|network.gateway.interface.internal|} \
+          --dhcp-option=3,{|network.gateway.address.internal|} \
+          --dhcp-range={|network.gateway.interface.internal|},{|network.dhcp.start|},{|network.dhcp.end|},12h \
           --enable-tftp --tftp-root=/var/lib/tftpboot \
           --dhcp-userclass=set:ipxe,iPXE \
           --dhcp-boot=tag:#ipxe,undionly.kpxe \
           --dhcp-boot=tag:ipxe,http://${FQDOMAIN}:8080/boot.ipxe \
-          --address=/${FQDOMAIN}/{{address.internal}} \
+          --address=/${FQDOMAIN}/{|network.gateway.address.internal|} \
           --log-queries \
           --log-dhcp
         ExecStop=/usr/bin/docker stop dnsmasq

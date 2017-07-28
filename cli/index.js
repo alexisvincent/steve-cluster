@@ -15,13 +15,11 @@ try {
   const gateway_ignition_with_globals = Mustache.render(gateway_ignition_raw, variables);
   fs.writeFileSync('../matchbox/ignition/gateway.gen.yaml', gateway_ignition_with_globals)
   
-  const gateway_ignition = yaml.safeLoad(gateway_ignition_with_globals);
-  const profile_variables = variables.network.bootstrapper
-  gateway_ignition.systemd.units.forEach(function(unit) {
-    Mustache.tags = ["{{", "}}"]
-     const unit_with_profile_variables = Mustache.render(unit.contents, profile_variables);
-     fs.writeFileSync(`../services/${unit.name}`, unit_with_profile_variables)
-  }) 
+  variables.network.gateway = variables.network.bootstrapper
+
+  const gateway_ignition_with_globals_bootstrapper = Mustache.render(gateway_ignition_raw, variables);
+  const gateway_ignition = yaml.safeLoad(gateway_ignition_with_globals_bootstrapper);
+  gateway_ignition.systemd.units.forEach((unit) => fs.writeFileSync(`../services/${unit.name}`, unit.contents)) 
 
 } catch (e) {
   console.log(e);

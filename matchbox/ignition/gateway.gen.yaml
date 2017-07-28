@@ -24,11 +24,11 @@ networkd:
     - name: gateway.network
       contents: |
         [Match]
-        Name={{interface.internal}}
+        Name=ens37
 
         [Network]
-        DNS={{address.internal}}
-        Address={{address.internal}}/16
+        DNS=10.10.0.1
+        Address=10.10.0.1/16
 
 systemd:
   units:
@@ -83,8 +83,8 @@ systemd:
           -v ${MATCHBOX_PATH}:/var/lib/matchbox:Z \
           -v ${MATCHBOX_PATH}/etc:/etc/matchbox:Z,ro \
           quay.io/coreos/matchbox \
-            -address={{address.internal}}:8080 \
-            -rpc-address={{address.internal}}:8081 \
+            -address=10.10.0.1:8080 \
+            -rpc-address=10.10.0.1:8081 \
             -log-level=debug \
             -assets-path=/var/lib/matchbox/assets
         ExecStop=/usr/bin/docker stop matchbox
@@ -102,19 +102,19 @@ systemd:
 
         [Service]
         Environment="IMAGE=quay.io/coreos/dnsmasq"
-        Environment="FQDOMAIN={{hostname}}.steve"
+        Environment="FQDOMAIN=gateway.steve"
         ExecStartPre=-/usr/bin/docker kill dnsmasq
         ExecStartPre=-/usr/bin/docker rm dnsmasq
         ExecStartPre=/usr/bin/docker pull ${IMAGE}
         ExecStart=/usr/bin/docker run --name=dnsmasq --cap-add=NET_ADMIN --net=host ${IMAGE} -d -q \
-          --interface={{interface.internal}} \
-          --dhcp-option=3,{{address.internal}} \
-          --dhcp-range={{interface.internal}},10.10.0.50,10.10.0.100,12h \
+          --interface=ens37 \
+          --dhcp-option=3,10.10.0.1 \
+          --dhcp-range=ens37,10.10.0.50,10.10.0.100,12h \
           --enable-tftp --tftp-root=/var/lib/tftpboot \
           --dhcp-userclass=set:ipxe,iPXE \
           --dhcp-boot=tag:#ipxe,undionly.kpxe \
           --dhcp-boot=tag:ipxe,http://${FQDOMAIN}:8080/boot.ipxe \
-          --address=/${FQDOMAIN}/{{address.internal}} \
+          --address=/${FQDOMAIN}/10.10.0.1 \
           --log-queries \
           --log-dhcp
         ExecStop=/usr/bin/docker stop dnsmasq

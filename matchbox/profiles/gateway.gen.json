@@ -7,11 +7,7 @@
     "args": [
       "coreos.config.url=http://bootstrapper.steve:8080/ignition?uuid=${uuid}&mac=${mac:hexhyp}",
       "coreos.first_boot=yes",
-      "coreos.autologin",
-
-      "interface.internal=ens37",
-      "address.internal=10.10.0.1",
-      "hostname=gateway"
+      "coreos.autologin"
     ]
   },
   "ignition_id": "gateway.gen.yaml"

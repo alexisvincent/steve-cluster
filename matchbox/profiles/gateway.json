@@ -5,7 +5,7 @@
     "kernel": "/assets/coreos/{|coreos.version|}/coreos_production_pxe.vmlinuz",
     "initrd": ["/assets/coreos/{|coreos.version|}/coreos_production_pxe_image.cpio.gz"],
     "args": [
-      "coreos.config.url=http://{|network.gateway.hostname|}.{|network.domain|}:8080/ignition?uuid=${uuid}&mac=${mac:hexhyp}",
+      "coreos.config.url=http://{|network.bootstrapper.hostname|}.{|network.domain|}:8080/ignition?uuid=${uuid}&mac=${mac:hexhyp}",
       "coreos.first_boot=yes",
       "coreos.autologin",
 

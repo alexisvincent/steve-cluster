@@ -9,7 +9,7 @@
       "coreos.first_boot=yes",
       "coreos.autologin",
 
-      "interface.internal=ens34",
+      "interface.internal=eno1",
       "address.internal=10.10.0.1",
       "hostname=gateway"
     ]

@@ -1,6 +1,6 @@
 {
-  "id": "gateway",
-  "name": "Gateway Node",
+  "id": "gateway-vm",
+  "name": "Gateway Node (VM)",
   "profile": "gateway.gen",
   "selector": {
     "mac": "74:e6:e2:da:7f:e9"

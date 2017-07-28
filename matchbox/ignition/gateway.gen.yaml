@@ -102,7 +102,7 @@ systemd:
         Requires=docker.service matchbox.service
 
         [Service]
-        Environment="IMAGE=quay.io/coreos/matchbox"
+        Environment="IMAGE=quay.io/coreos/dnsmasq"
         Environment="FQDOMAIN={{hostname}}.steve"
         ExecStartPre=-/usr/bin/docker kill dnsmasq
         ExecStartPre=-/usr/bin/docker rm dnsmasq

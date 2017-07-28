@@ -4,7 +4,7 @@ After=docker.service matchbox.service
 Requires=docker.service matchbox.service
 
 [Service]
-Environment="IMAGE=quay.io/coreos/matchbox"
+Environment="IMAGE=quay.io/coreos/dnsmasq"
 Environment="FQDOMAIN=bootstrapper.steve"
 ExecStartPre=-/usr/bin/docker kill dnsmasq
 ExecStartPre=-/usr/bin/docker rm dnsmasq

@@ -6,7 +6,7 @@ Requires=docker.service network-online.target
 [Service]
 ExecStartPre=-/usr/bin/docker kill pynetkey
 ExecStartPre=-/usr/bin/docker rm pynetkey
-ExecStartPre=/usr/bin/curl http://bootstrapper.steve/assets/pynetkey.tar | /usr/bin/docker load
+ExecStartPre=/usr/bin/curl http://bootstrapper.steve:8080/assets/pynetkey.tar | /usr/bin/docker load
 ExecStart=/usr/bin/echo --- | /usr/bin/docker run \
   --name=pynetkey -i alexisvincent/pynetkey -u ---
 ExecStop=/usr/bin/docker stop pynetkey

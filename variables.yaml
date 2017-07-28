@@ -13,8 +13,8 @@ network:
             internal: 10.10.0.1
             external: 192.168.0.1
         interface:
-            internal: eno1
-            external: eno2
+            internal: ens37
+            external: ens33
 
     bootstrapper:
         hostname: bootstrapper

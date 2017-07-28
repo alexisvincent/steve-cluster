@@ -16,7 +16,7 @@ ExecStart=/usr/bin/docker run --name=dnsmasq --cap-add=NET_ADMIN --net=host ${IM
   --dhcp-userclass=set:ipxe,iPXE \
   --dhcp-boot=tag:#ipxe,undionly.kpxe \
   --dhcp-boot=tag:ipxe,http://${FQDOMAIN}:8080/boot.ipxe \
-  --address=/${FQDOMAIN}/10.10.255.255 \
+  --address=/${FQDOMAIN}/10.10.10.10 \
   --log-queries \
   --log-dhcp
 ExecStop=/usr/bin/docker stop dnsmasq

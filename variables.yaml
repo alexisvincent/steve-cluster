@@ -19,7 +19,7 @@ network:
     bootstrapper:
         hostname: bootstrapper
         address: 
-            internal: 10.10.255.255
+            internal: 10.10.10.10
             external: 192.168.0.1
         interface:
             internal: ens37

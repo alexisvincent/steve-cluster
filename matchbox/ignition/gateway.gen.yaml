@@ -109,6 +109,7 @@ systemd:
         ExecStartPre=/usr/bin/docker pull ${IMAGE}
         ExecStart=/usr/bin/docker run --name=dnsmasq --cap-add=NET_ADMIN --net=host ${IMAGE} -d -q \
           --interface={{interface.internal}} \
+          --dhcp-option=3,{{address.internal}} \
           --dhcp-range={{interface.internal}},10.10.0.50,10.10.0.100,12h \
           --enable-tftp --tftp-root=/var/lib/tftpboot \
           --dhcp-userclass=set:ipxe,iPXE \

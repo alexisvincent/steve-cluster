@@ -58,11 +58,12 @@ systemd:
         [Service]
         ExecStartPre=-/usr/bin/docker kill pynetkey
         ExecStartPre=-/usr/bin/docker rm pynetkey
-        ExecStartPre=/usr/bin/curl http://{|network.bootstrapper.hostname|}.{|network.domain|}:8080/assets/pynetkey.tar > /etc/pynetkey.tar
+        ExecStartPre=/usr/bin/curl http://{|network.bootstrapper.address.internal|}:8080/assets/pynetkey.tar > /etc/pynetkey.tar
         ExecStartPre=/usr/bin/docker load < /etc/pynetkey.tar
         ExecStart=/usr/bin/echo {|pynetkey.password|} | /usr/bin/docker run \
           --name=pynetkey -i alexisvincent/pynetkey -u {|pynetkey.username|}
         ExecStop=/usr/bin/docker stop pynetkey
+        Restart=always
 
         [Install]
         WantedBy=multi-user.target
@@ -89,6 +90,7 @@ systemd:
             -log-level=debug \
             -assets-path=/var/lib/matchbox/assets
         ExecStop=/usr/bin/docker stop matchbox
+        Restart=always
         
         [Install]
         WantedBy=multi-user.target
@@ -119,6 +121,7 @@ systemd:
           --log-queries \
           --log-dhcp
         ExecStop=/usr/bin/docker stop dnsmasq
+        Restart=always
 
         [Install]
         WantedBy=multi-user.target

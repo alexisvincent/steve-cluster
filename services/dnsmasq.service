@@ -21,6 +21,7 @@ ExecStart=/usr/bin/docker run --name=dnsmasq --cap-add=NET_ADMIN --net=host ${IM
   --log-queries \
   --log-dhcp
 ExecStop=/usr/bin/docker stop dnsmasq
+Restart=always
 
 [Install]
 WantedBy=multi-user.target

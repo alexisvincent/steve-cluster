@@ -12,8 +12,8 @@ ExecStart=/usr/bin/docker run --name=matchbox --net=host \
   -v ${MATCHBOX_PATH}:/var/lib/matchbox:Z \
   -v ${MATCHBOX_PATH}/etc:/etc/matchbox:Z,ro \
   quay.io/coreos/matchbox \
-    -address=10.10.10.10:8080 \
-    -rpc-address=10.10.10.10:8081 \
+    -address=10.10.0.2:8080 \
+    -rpc-address=10.10.0.2:8081 \
     -log-level=debug \
     -assets-path=/var/lib/matchbox/assets
 ExecStop=/usr/bin/docker stop matchbox

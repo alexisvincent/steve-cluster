@@ -1,15 +1,15 @@
 {
-  "name": "yml-service-extractor",
-  "version": "1.0.0",
-  "description": "",
+  "name": "steve-cluster-manager",
   "main": "extract.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "npx browserify --node --igv , index.js > ../steve.js"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "js-yaml": "^3.9.0",
-    "mustache": "^2.3.0"
+    "mustache": "^2.3.0",
+    "vorpal": "^1.12.0"
+  },
+  "devDependencies": {
+    "browserify": "^14.4.0"
   }
 }

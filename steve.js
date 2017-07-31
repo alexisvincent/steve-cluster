@@ -65,7 +65,41 @@ vorpal
 vorpal
   .command('reload network', 'inject and reload networkd config')
   .action(function(args, cb) {
+    this.log('injecting network services...')
+    exec(`
+    sudo cp bootstrapper/network/gateway.network /etc/systemd/network/gateway.network
 
+    sudo systemctl daemon-reload
+    sudo systemctl restart systemd-networkd
+    `, (err, stdout, stderr) => {
+      this.log(stdout)
+      this.log(stderr)
+      this.log('done')
+      cb();
+    })
+
+  });
+
+vorpal
+  .command('pull assets <host>', 'download coreos images from remote computer')
+  .action(function(args, cb) {
+    exec(`
+    scp -r core@${args.host}:/opt/cluster-config/matchbox/assets /opt/cluster-config/matchbox
+    `,   (err, stdout, stdin) => {
+      this.log(stdout)
+      this.log(stderr)
+    })
+  });
+
+vorpal
+  .command('push assets <host>', 'download coreos images from remote computer')
+  .action(function(args, cb) {
+    exec(`
+    scp -r ./matchbox/assets core@${args.host}:/opt/cluster-config/matchbox
+    `,   (err, stdout, stdin) => {
+      this.log(stdout)
+      this.log(stderr)
+    })
   });
 
 vorpal.parse(process.argv);

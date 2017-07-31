@@ -1,2 +1,2 @@
-coreos
-pynetkey.tar
+*
+!.gitignore

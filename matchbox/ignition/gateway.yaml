@@ -58,9 +58,9 @@ systemd:
         [Service]
         ExecStartPre=-/usr/bin/docker kill pynetkey
         ExecStartPre=-/usr/bin/docker rm pynetkey
-        ExecStartPre=/usr/bin/curl -s http://{|network.bootstrapper.address.internal|}:8080/assets/pynetkey.tar > /etc/pynetkey.tar
-        ExecStartPre=/usr/bin/curl -s http://{|network.bootstrapper.address.internal|}:8080/assets/pynetkey.config > /etc/pynetkey.config
-        ExecStartPre=/usr/bin/docker load < /etc/pynetkey.tar
+        ExecStartPre=/usr/bin/curl -s http://{|network.bootstrapper.address.internal|}:8080/assets/pynetkey.tar -o /etc/pynetkey.tar
+        ExecStartPre=/usr/bin/curl -s http://{|network.bootstrapper.address.internal|}:8080/assets/pynetkey.config -o /etc/pynetkey.config
+        ExecStartPre=/usr/bin/sh -c '/usr/bin/docker load < /etc/pynetkey.tar'
         ExecStart=/usr/bin/docker run \
           -v /etc/pynetkey.config:/etc/pynetkey.config
           --name=pynetkey alexisvincent/pynetkey -c /etc/pynetkey.config

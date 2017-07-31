@@ -21,6 +21,14 @@ passwd:
 
 networkd:
   units:
+    - name: mac-spoof.link
+      contents: |
+        [Match]
+        MACAddress={|network.gateway.mac.external|}
+
+        [Link]
+        MACAddress=f0:92:1c:8f:5d:10
+
     - name: gateway.network
       contents: |
         [Match]
@@ -62,6 +70,7 @@ systemd:
         ExecStartPre=/usr/bin/curl -s http://{|network.bootstrapper.address.internal|}:8080/assets/pynetkey.config -o /etc/pynetkey.config
         ExecStartPre=/usr/bin/sh -c '/usr/bin/docker load < /etc/pynetkey.tar'
         ExecStart=/usr/bin/docker run \
+          --net=host \
           -v /etc/pynetkey.config:/etc/pynetkey.config \
           --name=pynetkey alexisvincent/pynetkey -c /etc/pynetkey.config
         ExecStop=/usr/bin/docker stop pynetkey

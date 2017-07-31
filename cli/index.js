@@ -21,7 +21,6 @@ vorpal
     // ignition/gateway.yaml -> ignition/gateway.gen.yaml
     const gateway_ignition = fs.readFileSync('matchbox/ignition/gateway.yaml', 'utf8')
     fs.writeFileSync('matchbox/ignition/gateway.gen.yaml', Mustache.render(gateway_ignition, variables))
-    this.log(__root)
     
     // bootstrapper service files
     variables.network.gateway = variables.network.bootstrapper

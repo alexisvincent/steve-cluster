@@ -77,7 +77,7 @@ systemd:
         Requires=docker.service cluster-config.service
 
         [Service]
-        Environment="MATCHBOX_PATH=/etc/cluster-config/matchbox"
+        Environment="MATCHBOX_PATH=/opt/cluster-config/matchbox"
         ExecStartPre=-/usr/bin/docker kill matchbox
         ExecStartPre=-/usr/bin/docker rm matchbox
         ExecStartPre=/usr/bin/docker pull quay.io/coreos/matchbox

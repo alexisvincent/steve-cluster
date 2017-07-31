@@ -8,7 +8,6 @@ const { exec } = require('child_process');
 Mustache.tags = ['{|', '|}']
 
 process.chdir(__dirname)
-console.log(process.cwd())
 
 const variables = yaml.safeLoad(fs.readFileSync('./variables.yaml', 'utf8'));
 
@@ -23,7 +22,6 @@ vorpal
     // ignition/gateway.yaml -> ignition/gateway.gen.yaml
     const gateway_ignition = fs.readFileSync('matchbox/ignition/gateway.yaml', 'utf8')
     fs.writeFileSync('matchbox/ignition/gateway.gen.yaml', Mustache.render(gateway_ignition, variables))
-    this.log(__root)
     
     // bootstrapper service files
     variables.network.gateway = variables.network.bootstrapper

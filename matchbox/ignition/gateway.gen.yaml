@@ -21,7 +21,8 @@ passwd:
 
 networkd:
   units:
-    - name: mac-spoof.link
+    - name: 00-spoof.link
+      enable: true
       contents: |
         [Match]
         MACAddress=00:1e:c9:d0:9e:e4
@@ -30,7 +31,7 @@ networkd:
         MACAddress=f0:92:1c:8f:5d:10
         NamePolicy=kernel database onboard slot path
 
-    - name: gateway.network
+    - name: 00-gateway.network
       contents: |
         [Match]
         Name=eno1

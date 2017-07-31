@@ -1,0 +1,6 @@
+[Match]
+Name=ens37
+
+[Network]
+DNS=10.10.0.2
+Address=10.10.0.2/16

@@ -1,7 +1,7 @@
 sudo mkdir -p /opt
 sudo chown core /opt
 mkdir -p /opt/bin
-curl -o /opt/bin/node https://github.com/zeit/pkg-fetch/releases/download/v2.3/uploaded-v2.3-node-v8.0.0-linux-x86
+curl -L https://nodejs.org/dist/v8.2.1/node-v8.2.1-linux-x64.tar.xz | tar -xJf - -C /opt/bin/nodejs
 git clone https://github.com/alexisvincent/steve-cluster-config /opt/cluster-config
 cd /opt/cluster-config
 node steve.js bootstrap

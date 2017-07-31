@@ -1,16 +1,16 @@
-storage:
-  disks:
-  - device: /dev/sda
-    wipe_table: true
-    partitions:
-    - label: ROOT
-  filesystems:
-  - mount:
-      device: /dev/disk/by-partlabel/ROOT
-      format: ext4
-      create:
-        force: true
-        options: [-L, ROOT]
+# storage:
+#   disks:
+#   - device: /dev/sda
+#     wipe_table: true
+#     partitions:
+#     - label: ROOT
+#   filesystems:
+#   - mount:
+#       device: /dev/disk/by-partlabel/ROOT
+#       format: ext4
+#       create:
+#         force: true
+#         options: [-L, ROOT]
 
 passwd:
   users:
@@ -52,16 +52,18 @@ systemd:
       contents: |
         [Unit]
         Description=Open pynetkey to enable internet access
-        After=docker.service network-online.target
-        Requires=docker.service network-online.target
+        After=docker.service
+        Requires=docker.service
 
         [Service]
         ExecStartPre=-/usr/bin/docker kill pynetkey
         ExecStartPre=-/usr/bin/docker rm pynetkey
         ExecStartPre=/usr/bin/curl -s http://10.10.0.2:8080/assets/pynetkey.tar > /etc/pynetkey.tar
+        ExecStartPre=/usr/bin/curl -s http://10.10.0.2:8080/assets/pynetkey.config > /etc/pynetkey.config
         ExecStartPre=/usr/bin/docker load < /etc/pynetkey.tar
-        ExecStart=/usr/bin/echo lolol | /usr/bin/docker run \
-          --name=pynetkey -i alexisvincent/pynetkey -u 18680666
+        ExecStart=/usr/bin/docker run \
+          -v /etc/pynetkey.config:/etc/pynetkey.config
+          --name=pynetkey alexisvincent/pynetkey -c /etc/pynetkey.config
         ExecStop=/usr/bin/docker stop pynetkey
         Restart=always
 

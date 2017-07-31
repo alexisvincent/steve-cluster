@@ -16,7 +16,7 @@ network:
             internal: eno1
             external: eno2
         mac:
-            external: 00:1e:c9:d0:9e:e4
+            external: 00:1E:C9:D0:9E:E4
 
     bootstrapper:
         hostname: bootstrapper

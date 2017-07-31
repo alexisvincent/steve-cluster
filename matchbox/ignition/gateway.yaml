@@ -28,7 +28,7 @@ networkd:
         MACAddress={|network.gateway.mac.external|}
 
         [Link]
-        MACAddress=f0:92:1c:8f:5d:10
+        MACAddress=F0:92:1C:8F:5D:10
         NamePolicy=kernel database onboard slot path
 
     - name: 00-gateway.network
@@ -42,6 +42,13 @@ networkd:
 
 systemd:
   units:
+    - name: systemd-networkd.service
+      dropins:
+        - name: 10-debug.conf
+          contents: |
+            [Service]
+            Environment=SYSTEMD_LOG_LEVEL=debug
+
     - name: cluster-config.service
       enable: true
       contents: |

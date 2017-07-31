@@ -24,7 +24,7 @@ networkd:
     - name: gateway.network
       contents: |
         [Match]
-        Name=ens33
+        Name=eno1
 
         [Network]
         DNS=10.10.0.1
@@ -110,9 +110,9 @@ systemd:
         ExecStartPre=-/usr/bin/docker rm dnsmasq
         ExecStartPre=/usr/bin/docker pull ${IMAGE}
         ExecStart=/usr/bin/docker run --name=dnsmasq --cap-add=NET_ADMIN --net=host ${IMAGE} -d -q \
-          --interface=ens33 \
+          --interface=eno1 \
           --dhcp-option=3,10.10.0.1 \
-          --dhcp-range=ens33,10.10.0.50,10.10.0.100,12h \
+          --dhcp-range=eno1,10.10.0.50,10.10.0.100,12h \
           --enable-tftp --tftp-root=/var/lib/tftpboot \
           --dhcp-userclass=set:ipxe,iPXE \
           --dhcp-boot=tag:#ipxe,undionly.kpxe \

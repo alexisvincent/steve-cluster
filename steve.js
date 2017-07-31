@@ -96,7 +96,7 @@ vorpal
   .action(function(args, cb) {
     exec(`
     scp -r ./matchbox/assets core@${args.host}:/opt/cluster-config/matchbox
-    `,   (err, stdout, stdin) => {
+    `,   (err, stdout, stderr) => {
       this.log(stdout)
       this.log(stderr)
     })

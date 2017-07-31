@@ -41,15 +41,12 @@ vorpal
     exec(`
     sudo cp bootstrapper/services/dnsmasq.service /etc/systemd/system/dnsmasq.service
     sudo cp bootstrapper/services/matchbox.service /etc/systemd/system/matchbox.service
-    sudo cp bootstrapper/services/cluster-config.service /etc/systemd/system/cluster-config.service
 
     sudo systemctl daemon-reload
 
-    sudo systemctl stop cluster-config
     sudo systemctl stop matchbox
     sudo systemctl stop dnsmasq
 
-    sudo systemctl start cluster-config
     sudo systemctl start matchbox
     sudo systemctl start dnsmasq
     `, (err, stdout, stderr) => {

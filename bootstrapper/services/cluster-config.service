@@ -1,0 +1,11 @@
+[Unit]
+Description=Download the github repository containing cluster config
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+ExecStart=-/usr/bin/git clone https://github.com/alexisvincent/steve-cluster-config /etc/cluster-config
+Restart=no
+
+[Install]
+WantedBy=multi-user.target

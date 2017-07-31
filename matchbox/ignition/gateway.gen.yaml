@@ -25,7 +25,7 @@ networkd:
       enable: true
       contents: |
         [Match]
-        MACAddress=00:1E:C9:D0:9E:E4
+        MACAddress=74:E6:E2:DA:7F:E9
 
         [Link]
         MACAddress=F0:92:1C:8F:5D:10
@@ -34,7 +34,7 @@ networkd:
     - name: 00-gateway.network
       contents: |
         [Match]
-        Name=eno1
+        Name=ens33
 
         [Network]
         DNS=10.10.0.1
@@ -130,9 +130,9 @@ systemd:
         ExecStartPre=-/usr/bin/docker rm dnsmasq
         ExecStartPre=/usr/bin/docker pull ${IMAGE}
         ExecStart=/usr/bin/docker run --name=dnsmasq --cap-add=NET_ADMIN --net=host ${IMAGE} -d -q \
-          --interface=eno1 \
+          --interface=ens33 \
           --dhcp-option=3,10.10.0.1 \
-          --dhcp-range=eno1,10.10.0.50,10.10.0.100,12h \
+          --dhcp-range=ens33,10.10.0.50,10.10.0.100,12h \
           --enable-tftp --tftp-root=/var/lib/tftpboot \
           --dhcp-userclass=set:ipxe,iPXE \
           --dhcp-boot=tag:#ipxe,undionly.kpxe \

@@ -1,0 +1,2 @@
+#sync folders
+while true ; do rsync -Pza 18680666@10.10.0.1:/Users/alexisvincent/Code/steve-cluster/ /opt/cluster-config  && sleep 5; done

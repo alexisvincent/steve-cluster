@@ -4,7 +4,7 @@ Requires=network-online.target
 After=network-online.target
 
 [Service]
-ExecStart=-/usr/bin/git clone https://github.com/alexisvincent/steve-cluster-config /etc/cluster-config
+ExecStart=-/usr/bin/rsync -Pza core@10.10.0.2:/opt/cluster-config/ /opt/cluster-config
 Restart=no
 
 [Install]

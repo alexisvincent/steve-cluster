@@ -1,0 +1,6 @@
+[Match]
+Name=ens33
+
+[Network]
+Address=10.10.0.3/16
+Gateway=10.10.0.2

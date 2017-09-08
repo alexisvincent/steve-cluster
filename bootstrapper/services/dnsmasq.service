@@ -10,9 +10,9 @@ ExecStartPre=-/usr/bin/docker kill dnsmasq
 ExecStartPre=-/usr/bin/docker rm dnsmasq
 ExecStartPre=/usr/bin/docker pull ${IMAGE}
 ExecStart=/usr/bin/docker run --name=dnsmasq --cap-add=NET_ADMIN --net=host ${IMAGE} -d -q \
-  --interface=ens37 \
+  --interface=ens34 \
   --dhcp-option=3,10.10.0.2 \
-  --dhcp-range=ens37,10.10.0.50,10.10.0.100,12h \
+  --dhcp-range=ens34,10.10.0.50,10.10.0.100,12h \
   --enable-tftp --tftp-root=/var/lib/tftpboot \
   --dhcp-userclass=set:ipxe,iPXE \
   --dhcp-boot=tag:#ipxe,undionly.kpxe \

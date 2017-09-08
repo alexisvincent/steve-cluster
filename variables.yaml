@@ -10,27 +10,24 @@ network:
     gateway:
         hostname: gateway
         address: 
-            internal: 10.10.0.1
-            external: 192.168.0.1
-        interface:
-            internal: ens33
-            external: ens34
+            internal: 10.10.0.3
         # interface:
-        #     internal: eno1
-        #     external: eno2
-        # mac:
-        #     external: 00:1E:C9:D0:9E:E4
+        #     internal: ens33
+        #     external: ens34
+        interface:
+            internal: eno1
+            external: eno2
         mac:
-            external: 74:E6:E2:DA:7F:E9
+            external: 00:1E:C9:D0:9E:E4
+        # mac:
+        #     external: 74:E6:E2:DA:7F:E9
 
     bootstrapper:
         hostname: bootstrapper
         address: 
             internal: 10.10.0.2
-            external: 192.168.0.1
         interface:
-            internal: ens37
-            external: ens33
+            internal: ens34
 
 coreos:
     version: 1409.7.0

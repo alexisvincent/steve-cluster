@@ -1,6 +1,8 @@
 [Match]
-Name=ens37
+Name=ens34
 
 [Network]
 DNS=10.10.0.2
 Address=10.10.0.2/16
+IPForward=ipv4
+IPMasquerade=yes

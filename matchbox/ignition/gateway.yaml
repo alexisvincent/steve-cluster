@@ -19,6 +19,25 @@ passwd:
       ssh_authorized_keys:
         - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCk8CU3Bi1KFNcfQXpEdxz7HyfY1rh0MnuSVDFRTKcIIfboE5uMj0k7S/K1odIYFafs2Q8QgR/WmaZ15VAu9MvYfnmE9iPuB9PUa8YVkGeAxjIq929RICbYJCAgNen0lWqV9QQiulhU8A76Ot1CbNSIJgND4KbBUfZqjrCTO4lWbkisYwickbyi1j8FSTLcVmHkMYSOcFbueVXQrO6OXZQtLGa8HwRbY6kA3O6klzei1eMMzADLSjCuLKX7q0taYSQk80Joll2txD5bwId3SRvxZAenHrLZLkXzD7k68hxbpmTltMrwdAtOouNzyNuNCLaxEHUygQLxIBGEcOkFNA6e954GPMIf/IV6X4wmAnA9kqBbxGCC6b7KA+e2s8eusEWCA4lie1kJt4aQqImpquqpbft9wHDx16Qsh/Tqj7ZKG7bbPox82N2MRSl+RpxnOIjc8/xIFdrjELOH/zjI4milIT8BiSdGhQjk0ABTZWcVF9nf8eGxtw3oMKyYfhMrZ3+WRny0ut/4cyLwQJdbqi3so4sLJ51A6YLB4kpGRYRb8gChZZFh6uiwMPj057J9VOEbZE6hpQnXgatUMvmNfCFztj4+RmRiFo7l0YXz6DmocxqlEtXR2bOEVYq77Edc/YNDM5lIh5Wl3Bno0qsZ+KXoG7BASgP1qWBY5x25+nXwLQ== alexisvincent@Zeus.local
 
+storage:
+  files:
+    - path: /etc/hostname
+      filesystem: root
+      contents: 
+        inline: gateway
+
+    - path: /home/core/.ssh/bootstrapper
+      filesystem: root
+      contents:
+        remote:
+          url: http://{|network.bootstrapper.address.internal|}:8080/assets/keys/bootstrapper
+
+    - path: /home/core/.ssh/bootstrapper.pub
+      filesystem: root
+      contents:
+        remote:
+          url: http://{|network.bootstrapper.address.internal|}:8080/assets/keys/bootstrapper.pub
+
 networkd:
   units:
     - name: gateway.network
@@ -34,23 +53,20 @@ networkd:
 
 systemd:
   units:
-    - name: systemd-networkd.service
-      dropins:
-        - name: 10-debug.conf
-          contents: |
-            [Service]
-            Environment=SYSTEMD_LOG_LEVEL=debug
-
-    - name: cluster-config.service
+    - name: download-assets.service
       enable: true
       contents: |
         [Unit]
         Description=Download the github repository containing cluster config
-        Requires=network-online.target
-        After=network-online.target
+        Requires=network-online.target docker.service
+        After=network-online.target docker.service
+        ConditionPathExists=!/opt/cluster-config
+        ConditionHost=gateway
 
         [Service]
-        ExecStart=-/usr/bin/git clone https://github.com/alexisvincent/steve-cluster-config /etc/cluster-config
+        ExecStartPre=-/usr/bin/mkdir -p /opt/cluster-config
+        ExecStart=-/usr/bin/rsync -Pza core@{|network.bootstrapper.address.internal|}:/opt/cluster-config/ /opt/cluster-config
+        ExecStartPost=/usr/bin/sh -c '/usr/bin/docker load < /opt/cluster-config/matchbox/assets/pynetkey.tar'
         Restart=no
 
         [Install]
@@ -61,18 +77,16 @@ systemd:
       contents: |
         [Unit]
         Description=Open pynetkey to enable internet access
-        After=docker.service
-        Requires=docker.service
+        After=docker.service download-assets.service
+        Requires=docker.service download-assets.service
+        ConditionHost=gateway
 
         [Service]
         ExecStartPre=-/usr/bin/docker kill pynetkey
         ExecStartPre=-/usr/bin/docker rm pynetkey
-        ExecStartPre=/usr/bin/curl -s http://{|network.bootstrapper.address.internal|}:8080/assets/pynetkey.tar -o /etc/pynetkey.tar
-        ExecStartPre=/usr/bin/curl -s http://{|network.bootstrapper.address.internal|}:8080/assets/pynetkey.config -o /etc/pynetkey.config
-        ExecStartPre=/usr/bin/sh -c '/usr/bin/docker load < /etc/pynetkey.tar'
         ExecStart=/usr/bin/docker run \
           --net=host \
-          -v /etc/pynetkey.config:/etc/pynetkey.config \
+          -v /opt/cluster-config/matchbox/assets/pynetkey.config:/etc/pynetkey.config \
           --name=pynetkey alexisvincent/pynetkey -c /etc/pynetkey.config
         ExecStop=/usr/bin/docker stop pynetkey
         Restart=always
@@ -85,8 +99,8 @@ systemd:
       contents: |
         [Unit]
         Description=CoreOS matchbox Server
-        After=docker.service cluster-config.service
-        Requires=docker.service cluster-config.service
+        After=docker.service download-assets.service pynetkey.service
+        Requires=docker.service download-assets.service pynetkey.service
 
         [Service]
         Environment="MATCHBOX_PATH=/opt/cluster-config/matchbox"

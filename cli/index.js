@@ -8,11 +8,12 @@ Mustache.tags = ['{|', '|}']
 
 process.chdir(__dirname)
 
-const variables = yaml.safeLoad(fs.readFileSync('./variables.yaml', 'utf8'));
 
 vorpal
   .command('compile', 'compile source files (substitute variables)')
   .action(function(args, cb) {
+
+    const variables = yaml.safeLoad(fs.readFileSync('./variables.yaml', 'utf8'));
 
     // profiles/gateway.json -> profiles/gateway.gen.json
     const profiles_gateway = fs.readFileSync('matchbox/profiles/gateway.json', 'utf8');
@@ -26,7 +27,7 @@ vorpal
     variables.network.gateway = variables.network.bootstrapper
     const gateway_ignition_bootstrapper = yaml.safeLoad(Mustache.render(gateway_ignition, variables));
     gateway_ignition_bootstrapper.systemd.units
-      .filter(unit => ['matchbox.service', 'dnsmasq.service', 'cluster-config.service'].includes(unit.name))
+      .filter(unit => ['matchbox.service', 'dnsmasq.service', 'download-assets.service'].includes(unit.name))
       .forEach((unit) => fs.writeFileSync(`bootstrapper/services/${unit.name}`, unit.contents)) 
     gateway_ignition_bootstrapper.networkd.units.forEach((unit) => fs.writeFileSync(`bootstrapper/network/${unit.name}`, unit.contents)) 
 
@@ -41,15 +42,15 @@ vorpal
     exec(`
     sudo cp bootstrapper/services/dnsmasq.service /etc/systemd/system/dnsmasq.service
     sudo cp bootstrapper/services/matchbox.service /etc/systemd/system/matchbox.service
-    sudo cp bootstrapper/services/cluster-config.service /etc/systemd/system/cluster-config.service
+    sudo cp bootstrapper/services/download-assets.service /etc/systemd/system/download-assets.service
 
     sudo systemctl daemon-reload
 
-    sudo systemctl stop cluster-config
+    sudo systemctl stop download-assets
     sudo systemctl stop matchbox
     sudo systemctl stop dnsmasq
 
-    sudo systemctl start cluster-config
+    sudo systemctl start download-assets
     sudo systemctl start matchbox
     sudo systemctl start dnsmasq
     `, (err, stdout, stderr) => {
@@ -62,11 +63,29 @@ vorpal
   });
 
 vorpal
-  .command('reload network', 'inject and reload networkd config')
+  .command('reload network control', 'inject and reload networkd config')
   .action(function(args, cb) {
     this.log('injecting network services...')
     exec(`
-    sudo cp bootstrapper/network/gateway.network /etc/systemd/network/gateway.network
+    sudo cp bootstrapper/network/control.network /etc/systemd/network/static.network
+
+    sudo systemctl daemon-reload
+    sudo systemctl restart systemd-networkd
+    `, (err, stdout, stderr) => {
+      this.log(stdout)
+      this.log(stderr)
+      this.log('done')
+      cb();
+    })
+
+  });
+
+  vorpal
+  .command('reload network minion', 'inject and reload networkd config')
+  .action(function(args, cb) {
+    this.log('injecting network services...')
+    exec(`
+    sudo cp bootstrapper/network/minion.network /etc/systemd/network/static.network
 
     sudo systemctl daemon-reload
     sudo systemctl restart systemd-networkd

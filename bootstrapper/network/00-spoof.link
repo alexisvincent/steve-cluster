@@ -1,6 +1,0 @@
-[Match]
-MACAddress=
-
-[Link]
-MACAddress=F0:92:1C:8F:5D:10
-NamePolicy=kernel database onboard slot path

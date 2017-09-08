@@ -2,8 +2,7 @@
   "name": "steve-cluster-manager",
   "main": "extract.js",
   "scripts": {
-    "docker-build": "npm install && npx pkg index.js",
-    "build": "npx browserify --node --igv , index.js > steve.js"
+    "docker-build": "npm install && npx pkg --out-path=build -t node8-linux-x64,node8-macos-x64 index.js"
   },
   "dependencies": {
     "js-yaml": "^3.9.0",
@@ -11,7 +10,6 @@
     "vorpal": "^1.12.0"
   },
   "devDependencies": {
-    "browserify": "^14.4.0",
     "pkg": "^4.2.4"
   }
 }

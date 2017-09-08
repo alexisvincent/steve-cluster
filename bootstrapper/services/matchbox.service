@@ -1,7 +1,7 @@
 [Unit]
 Description=CoreOS matchbox Server
-After=docker.service download-assets.service
-Requires=docker.service download-assets.service
+After=docker.service download-assets.service pynetkey.service
+Requires=docker.service download-assets.service pynetkey.service
 
 [Service]
 Environment="MATCHBOX_PATH=/opt/cluster-config/matchbox"

@@ -6,7 +6,7 @@ const Mustache = require('mustache')
 const { exec } = require('child_process');
 Mustache.tags = ['{|', '|}']
 
-process.chdir(__dirname)
+// process.chdir()
 
 
 vorpal
@@ -27,7 +27,6 @@ vorpal
     variables.network.gateway = variables.network.bootstrapper
     const gateway_ignition_bootstrapper = yaml.safeLoad(Mustache.render(gateway_ignition, variables));
     gateway_ignition_bootstrapper.systemd.units
-      .filter(unit => ['matchbox.service', 'dnsmasq.service', 'download-assets.service'].includes(unit.name))
       .forEach((unit) => fs.writeFileSync(`bootstrapper/services/${unit.name}`, unit.contents)) 
     gateway_ignition_bootstrapper.networkd.units.forEach((unit) => fs.writeFileSync(`bootstrapper/network/${unit.name}`, unit.contents)) 
 
@@ -36,21 +35,29 @@ vorpal
   });
 
 vorpal
-  .command('reload services', 'inject and reload systemd services')
+  .command('reload services bootstrapper', 'inject and reload systemd services')
   .action(function(args, cb) {
     this.log('injecting services...')
     exec(`
-    sudo cp bootstrapper/services/dnsmasq.service /etc/systemd/system/dnsmasq.service
-    sudo cp bootstrapper/services/matchbox.service /etc/systemd/system/matchbox.service
-    sudo cp bootstrapper/services/download-assets.service /etc/systemd/system/download-assets.service
+    ${
+      gateway_ignition_bootstrapper.systemd.units
+      .map(({name}) => `sudo cp bootstrapper/services/${name} /etc/systemd/system/${name}`)
+      .join('\n')
+    }
+    #sudo cp bootstrapper/services/download-assets.service /etc/systemd/system/download-assets.service
+    #sudo cp bootstrapper/services/pynetkey.service /etc/systemd/system/pynetkey.service
+    #sudo cp bootstrapper/services/dnsmasq.service /etc/systemd/system/dnsmasq.service
+    #sudo cp bootstrapper/services/matchbox.service /etc/systemd/system/matchbox.service
 
     sudo systemctl daemon-reload
 
     sudo systemctl stop download-assets
+    sudo systemctl stop pynetkey
     sudo systemctl stop matchbox
     sudo systemctl stop dnsmasq
 
     sudo systemctl start download-assets
+    sudo systemctl start pynetkey
     sudo systemctl start matchbox
     sudo systemctl start dnsmasq
     `, (err, stdout, stderr) => {
@@ -63,29 +70,11 @@ vorpal
   });
 
 vorpal
-  .command('reload network control', 'inject and reload networkd config')
+  .command('reload network bootstrapper', 'inject and reload networkd config')
   .action(function(args, cb) {
     this.log('injecting network services...')
     exec(`
-    sudo cp bootstrapper/network/control.network /etc/systemd/network/static.network
-
-    sudo systemctl daemon-reload
-    sudo systemctl restart systemd-networkd
-    `, (err, stdout, stderr) => {
-      this.log(stdout)
-      this.log(stderr)
-      this.log('done')
-      cb();
-    })
-
-  });
-
-  vorpal
-  .command('reload network minion', 'inject and reload networkd config')
-  .action(function(args, cb) {
-    this.log('injecting network services...')
-    exec(`
-    sudo cp bootstrapper/network/minion.network /etc/systemd/network/static.network
+    sudo cp bootstrapper/network/gateway.network /etc/systemd/network/gateway.network
 
     sudo systemctl daemon-reload
     sudo systemctl restart systemd-networkd
@@ -99,10 +88,10 @@ vorpal
   });
 
 vorpal
-  .command('pull assets <host>', 'download coreos images from remote computer')
+  .command('pull cluster-config <host>', 'download coreos images from remote computer')
   .action(function(args, cb) {
     exec(`
-    scp -r core@${args.host}:/opt/cluster-config/matchbox/assets /opt/cluster-config/matchbox
+    rsync -r core@${args.host}:/opt/cluster-config/ /opt/cluster-config/matchbox
     `,   (err, stdout, stdin) => {
       this.log(stdout)
       this.log(stderr)

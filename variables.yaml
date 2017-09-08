@@ -11,14 +11,14 @@ network:
         hostname: gateway
         address: 
             internal: 10.10.0.3
-        # interface:
-        #     internal: ens33
-        #     external: ens34
         interface:
-            internal: eno1
-            external: eno2
-        mac:
-            external: 00:1E:C9:D0:9E:E4
+            internal: ens33
+            external: ens34
+        # interface:
+        #     internal: eno1
+        #     external: eno2
+        # mac:
+        #     external: 00:1E:C9:D0:9E:E4
         # mac:
         #     external: 74:E6:E2:DA:7F:E9
 

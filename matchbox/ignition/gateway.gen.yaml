@@ -21,11 +21,17 @@ passwd:
 
 storage:
   files:
+    - path: /etc/hostname
+      filesystem: root
+      contents: 
+        inline: gateway
+
     - path: /home/core/.ssh/bootstrapper
       filesystem: root
       contents:
         remote:
           url: http://10.10.0.2:8080/assets/keys/bootstrapper
+
     - path: /home/core/.ssh/bootstrapper.pub
       filesystem: root
       contents:
@@ -40,8 +46,8 @@ networkd:
         Name=eno1
 
         [Network]
-        DNS=10.10.0.1
-        Address=10.10.0.1/16
+        DNS=10.10.0.3
+        Address=10.10.0.3/16
         IPForward=ipv4
         IPMasquerade=yes
 
@@ -52,11 +58,15 @@ systemd:
       contents: |
         [Unit]
         Description=Download the github repository containing cluster config
-        Requires=network-online.target
-        After=network-online.target
+        Requires=network-online.target docker.service
+        After=network-online.target docker.service
+        ConditionPathExists=!/opt/cluster-config
+        ConditionHost=gateway
 
         [Service]
+        ExecStartPre=-/usr/bin/mkdir -p /opt/cluster-config
         ExecStart=-/usr/bin/rsync -Pza core@10.10.0.2:/opt/cluster-config/ /opt/cluster-config
+        ExecStartPost=/usr/bin/sh -c '/usr/bin/docker load < /opt/cluster-config/matchbox/assets/pynetkey.tar'
         Restart=no
 
         [Install]
@@ -67,13 +77,13 @@ systemd:
       contents: |
         [Unit]
         Description=Open pynetkey to enable internet access
-        After=download-assets.service
-        Requires=download-assets.service
+        After=docker.service download-assets.service
+        Requires=docker.service download-assets.service
+        ConditionHost=gateway
 
         [Service]
         ExecStartPre=-/usr/bin/docker kill pynetkey
         ExecStartPre=-/usr/bin/docker rm pynetkey
-        ExecStartPre=/usr/bin/sh -c '/usr/bin/docker load < /opt/cluster-config/matchbox/assets/pynetkey.tar'
         ExecStart=/usr/bin/docker run \
           --net=host \
           -v /opt/cluster-config/matchbox/assets/pynetkey.config:/etc/pynetkey.config \
@@ -89,8 +99,8 @@ systemd:
       contents: |
         [Unit]
         Description=CoreOS matchbox Server
-        After=docker.service download-assets.service
-        Requires=docker.service download-assets.service
+        After=docker.service download-assets.service pynetkey.service
+        Requires=docker.service download-assets.service pynetkey.service
 
         [Service]
         Environment="MATCHBOX_PATH=/opt/cluster-config/matchbox"
@@ -101,8 +111,8 @@ systemd:
           -v ${MATCHBOX_PATH}:/var/lib/matchbox:Z \
           -v ${MATCHBOX_PATH}/etc:/etc/matchbox:Z,ro \
           quay.io/coreos/matchbox \
-            -address=10.10.0.1:8080 \
-            -rpc-address=10.10.0.1:8081 \
+            -address=10.10.0.3:8080 \
+            -rpc-address=10.10.0.3:8081 \
             -log-level=debug \
             -assets-path=/var/lib/matchbox/assets
         ExecStop=/usr/bin/docker stop matchbox
@@ -127,13 +137,13 @@ systemd:
         ExecStartPre=/usr/bin/docker pull ${IMAGE}
         ExecStart=/usr/bin/docker run --name=dnsmasq --cap-add=NET_ADMIN --net=host ${IMAGE} -d -q \
           --interface=eno1 \
-          --dhcp-option=3,10.10.0.1 \
+          --dhcp-option=3,10.10.0.3 \
           --dhcp-range=eno1,10.10.0.50,10.10.0.100,12h \
           --enable-tftp --tftp-root=/var/lib/tftpboot \
           --dhcp-userclass=set:ipxe,iPXE \
           --dhcp-boot=tag:#ipxe,undionly.kpxe \
           --dhcp-boot=tag:ipxe,http://${FQDOMAIN}:8080/boot.ipxe \
-          --address=/${FQDOMAIN}/10.10.0.1 \
+          --address=/${FQDOMAIN}/10.10.0.3 \
           --log-queries \
           --log-dhcp
         ExecStop=/usr/bin/docker stop dnsmasq

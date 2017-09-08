@@ -21,17 +21,7 @@ passwd:
 
 networkd:
   units:
-    - name: 00-spoof.link
-      enable: true
-      contents: |
-        [Match]
-        MACAddress={|network.gateway.mac.external|}
-
-        [Link]
-        MACAddress=F0:92:1C:8F:5D:10
-        NamePolicy=kernel database onboard slot path
-
-    - name: 00-gateway.network
+    - name: gateway.network
       contents: |
         [Match]
         Name={|network.gateway.interface.internal|}
@@ -39,6 +29,8 @@ networkd:
         [Network]
         DNS={|network.gateway.address.internal|}
         Address={|network.gateway.address.internal|}/{|network.subnet.short|}
+        IPForward=ipv4
+        IPMasquerade=yes
 
 systemd:
   units:

@@ -1,0 +1,8 @@
+{
+    "id": "minion-vm",
+    "name": "Minion 1 (VM)",
+    "selector": {
+      "mac": "00:0C:29:44:0C:18"
+    },
+    "profile": "minion.gen"
+  }

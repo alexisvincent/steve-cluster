@@ -6,8 +6,9 @@ ConditionPathExists=!/opt/cluster-config
 ConditionHost=gateway
 
 [Service]
-ExecStartPre=-/usr/bin/mkdir -p /opt/cluster-config
-ExecStart=-/usr/bin/rsync -Pza core@10.10.0.2:/opt/cluster-config/ /opt/cluster-config
+ExecStartPre=/usr/bin/mkdir -p /opt/cluster-config
+ExecStartPre=/usr/bin/sh -c 'ssh-keyscan 10.10.0.2 >> /root/.ssh/known_hosts'
+ExecStart=/usr/bin/rsync -Pza core@10.10.0.2:/opt/cluster-config/ /opt/cluster-config
 ExecStartPost=/usr/bin/sh -c '/usr/bin/docker load < /opt/cluster-config/matchbox/assets/pynetkey.tar'
 Restart=no
 

@@ -23,17 +23,26 @@ storage:
   files:
     - path: /etc/hostname
       filesystem: root
+      mode: 0644
       contents: 
         inline: gateway
 
-    - path: /home/core/.ssh/bootstrapper
+    - path: /root/.ssh/known_hosts
       filesystem: root
+      mode: 0644
+      contents: 
+        inline: ""
+
+    - path: /root/.ssh/id_rsa
+      filesystem: root
+      mode: 0600
       contents:
         remote:
           url: http://{|network.bootstrapper.address.internal|}:8080/assets/keys/bootstrapper
 
-    - path: /home/core/.ssh/bootstrapper.pub
+    - path: /root/.ssh/id_rsa.pub
       filesystem: root
+      mode: 0600
       contents:
         remote:
           url: http://{|network.bootstrapper.address.internal|}:8080/assets/keys/bootstrapper.pub
@@ -64,8 +73,9 @@ systemd:
         ConditionHost=gateway
 
         [Service]
-        ExecStartPre=-/usr/bin/mkdir -p /opt/cluster-config
-        ExecStart=-/usr/bin/rsync -Pza core@{|network.bootstrapper.address.internal|}:/opt/cluster-config/ /opt/cluster-config
+        ExecStartPre=/usr/bin/mkdir -p /opt/cluster-config
+        ExecStartPre=/usr/bin/sh -c 'ssh-keyscan {|network.bootstrapper.address.internal|} >> /root/.ssh/known_hosts'
+        ExecStart=/usr/bin/rsync -Pza core@{|network.bootstrapper.address.internal|}:/opt/cluster-config/ /opt/cluster-config
         ExecStartPost=/usr/bin/sh -c '/usr/bin/docker load < /opt/cluster-config/matchbox/assets/pynetkey.tar'
         Restart=no
 

@@ -35,9 +35,16 @@ vorpal
   });
 
 vorpal
-  .command('reload services bootstrapper', 'inject and reload systemd services')
+  .command('reload services', 'inject and reload systemd services')
   .action(function(args, cb) {
     this.log('injecting services...')
+
+    const variables = yaml.safeLoad(fs.readFileSync('./variables.yaml', 'utf8'));
+    const gateway_ignition = fs.readFileSync('matchbox/ignition/gateway.yaml', 'utf8')
+    const gateway_ignition_bootstrapper = yaml.safeLoad(Mustache.render(gateway_ignition, variables));
+
+    this.log('this may take some time... don\'t quit the cli')
+    
     exec(`
     ${
       gateway_ignition_bootstrapper.systemd.units
@@ -70,7 +77,7 @@ vorpal
   });
 
 vorpal
-  .command('reload network bootstrapper', 'inject and reload networkd config')
+  .command('reload network', 'inject and reload networkd config')
   .action(function(args, cb) {
     this.log('injecting network services...')
     exec(`

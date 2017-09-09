@@ -12,8 +12,8 @@ network:
         address: 
             internal: 10.10.0.3
         interface:
-            internal: ens33
-            external: ens34
+            internal: ens34
+            external: ens33
         # interface:
         #     internal: eno1
         #     external: eno2

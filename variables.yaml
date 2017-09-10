@@ -8,7 +8,7 @@ network:
         end: 10.10.0.100
 
     gateway:
-        address: 10.10.0.1
+        address: 10.10.0.5
 
 coreos:
     version: 1465.7.0

@@ -2,11 +2,13 @@
   "id": "gateway-2",
   "name": "Gateway (VM)",
   "selector": {
-    "mac": "00:0C:29:90:A9:FD"
+    "mac": "00:0C:29:90:A9:FD",
+    "os": "installing"
   },
   "profile": "gateway.gen",
   "metadata": {
     "hostname": "gateway-2",
+    "pynetkey": false,
     "interface": {
       "internal": "ens34", 
       "external": "ens33"

@@ -855,8 +855,8 @@ compile() {
     const profiles_gateway = fs.readFileSync('matchbox/profiles/gateway.json', 'utf8');
     fs.writeFileSync('matchbox/profiles/gateway.gen.json', Mustache.render(profiles_gateway, variables))
 
-    const gateway_ignition = fs.readFileSync('matchbox/ignition/gateway.yaml', 'utf8')
-    fs.writeFileSync('matchbox/ignition/gateway.gen.yaml', Mustache.render(gateway_ignition, variables))
+    const profiles_coreos_install = fs.readFileSync('matchbox/profiles/install-reboot.json', 'utf8');
+    fs.writeFileSync('matchbox/profiles/install-reboot.gen.json', Mustache.render(profiles_coreos_install, variables))
 HEREDOC
 
   echo 'done'
@@ -905,24 +905,28 @@ Description:
   render ignition for <mac> from matchbox instance at <host>
 HEREDOC
 ignition() {
-  host=${1:-}
-  mac=${2:-}
-  url="http://${host}:8080/ignition?mac=${mac//\:/-}"
-  echo "downloading ignition from $url to ./ignition.json..."
-  curl -sS $url -f -o ./ignition.json
-  echo "successfully aquired ignition.json"
-  echo
+  if [[ ${#_COMMAND_ARGV[@]} = 1 ]]; 
+  then desc --get "push";
+  else 
+    host=${1:-}
+    mac=${2:-}
+    url="http://${host}:8080/ignition?mac=${mac//\:/-}&os=installing"
+    echo "downloading ignition from $url to ./ignition.json..."
+    curl -sS $url -f -o ./ignition.json
+    echo "successfully aquired ignition.json"
+    echo
 
-  read -p "Would you like to install this ignition config to disk (/dev/sda)? [yY] " -n 1 -r
-  echo
-  if [[ $REPLY =~ ^[Yy]$ ]]
-  then
-    read -p "Are you sure? [yY] " -n 1 -r
+    read -p "Would you like to install this ignition config to disk (/dev/sda)? [yY] " -n 1 -r
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]
     then
-      echo "installing coreos to /dev/sda..."
-      sudo coreos-install -b http://$host:8080/assets/coreos/ -d /dev/sda -i ./ignition.json -V 1465.7.0
+      read -p "Are you sure? [yY] " -n 1 -r
+      echo
+      if [[ $REPLY =~ ^[Yy]$ ]]
+      then
+        echo "installing coreos to /dev/sda..."
+        sudo coreos-install -b http://$host:8080/assets/coreos/ -d /dev/sda -i ./ignition.json -V 1465.7.0
+      fi
     fi
   fi
 }
@@ -963,6 +967,8 @@ push() {
   if [[ ${#_COMMAND_ARGV[@]} = 1 ]]; 
     then desc --get "push";
     else 
+      ssh core@${1:-} 'sudo mkdir -p /opt/cluster-config'
+      ssh core@${1:-} 'sudo chown core /opt/cluster-config'
       echo "syncing..."
       rsync -Pza . core@${1:-}:/opt/cluster-config
       echo "marking asset.ready..."
@@ -977,6 +983,23 @@ push() {
         while true; do rsync -Pza . core@${1:-}:/opt/cluster-config; sleep 5; done
       fi
     fi
+}
+
+desc "push_cli" <<HEREDOC
+Usage:
+  ${_ME} push_cli <host>
+
+Description:
+  push cli to remote computer
+HEREDOC
+push_cli() {
+  if [[ ${#_COMMAND_ARGV[@]} = 1 ]]; 
+  then desc --get "push";
+  else 
+    echo "syncing..."
+    scp ./steve core@${1:-}:/home/core/steve
+    echo "done"
+  fi
 }
 
 desc "download_coreos" <<HEREDOC

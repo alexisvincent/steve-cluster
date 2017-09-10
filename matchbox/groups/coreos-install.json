@@ -1,0 +1,5 @@
+{
+    "id": "coreos-install",
+    "name": "CoreOS Container Linux Install",
+    "profile": "install-reboot.gen"
+  }

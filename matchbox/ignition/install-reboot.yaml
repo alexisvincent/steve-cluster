@@ -1,0 +1,34 @@
+systemd:
+  units:
+    - name: installer.service
+      enable: true
+      contents: |
+        [Unit]
+        Requires=network-online.target
+        After=network-online.target
+        [Service]
+        Type=simple
+        ExecStart=/opt/installer
+        [Install]
+        WantedBy=multi-user.target
+storage:
+  files:
+    - path: /opt/installer
+      filesystem: root
+      mode: 0500
+      contents:
+        inline: |
+          #!/bin/bash -ex
+          curl --retry 10 --fail "http://{|network.gateway.address|}:8080/ignition?{{.request.raw_query}}&os=installing" -o ignition.json
+          coreos-install -d /dev/sda -C {{.request.query.coreos_channel}} -V {{.request.query.coreos_version}} -i ignition.json -b http://{{.request.query.gateway_address}}:8080/assets/coreos
+          udevadm settle
+          systemctl reboot
+{{ if index . "ssh_authorized_keys" }}
+passwd:
+  users:
+    - name: core
+      ssh_authorized_keys:
+        {{ range $element := .ssh_authorized_keys }}
+        - {{$element}}
+        {{end}}
+{{end}}

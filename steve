@@ -845,12 +845,30 @@ HEREDOC
 compile() {
   echo 'compiling...'
   node <<HEREDOC
-    const yaml = require('js-yaml');
-    const fs   = require('fs');
+    const yaml = require('js-yaml')
+    const fs   = require('fs')
     const Mustache = require('mustache')
     Mustache.tags = ['{|', '|}']
 
+    const requireJSON = (filePath) => JSON.parse(fs.readFileSync(filePath, "utf8"));
+
     const variables = yaml.safeLoad(fs.readFileSync('./variables.yaml', 'utf8'));
+
+    const gateway_1 = requireJSON('./matchbox/groups/gateway.1.json.template')
+    const gateway_2_vm = requireJSON('./matchbox/groups/gateway.2.vm.json.template')
+    const gateway_3_vm = requireJSON('./matchbox/groups/gateway.2.vm.json.template')
+    const coreos_install = requireJSON('./matchbox/groups/coreos-install.json.template')
+
+    gateway_1.global = variables
+    gateway_2_vm.global = variables
+    gateway_3_vm.global = variables
+    gateway_3_vm.global = variables
+    coreos_install.global = variables
+
+    fs.writeFileSync('matchbox/groups/gateway.1.gen.json', JSON.stringify(gateway_1,null, ' '))
+    fs.writeFileSync('matchbox/groups/gateway.2_vm.gen.json',JSON.stringify(gateway_2_vm,null, ' ') )
+    fs.writeFileSync('matchbox/groups/gateway.3_vm.gen.json',JSON.stringify(gateway_3_vm,null, ' ') )
+    fs.writeFileSync('matchbox/groups/coreos-install.gen.json', JSON.stringify(coreos_install,null, ' '))
 
     const profiles_gateway = fs.readFileSync('matchbox/profiles/gateway.json', 'utf8');
     fs.writeFileSync('matchbox/profiles/gateway.gen.json', Mustache.render(profiles_gateway, variables))

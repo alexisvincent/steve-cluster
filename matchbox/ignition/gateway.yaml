@@ -70,8 +70,8 @@ networkd:
         Name={{.interface.internal}}
 
         [Network]
-        Address={{.address.internal}}/{{.request.query.network_subnet_short}}
-        Address={{.request.query.gateway_address}}/{{.request.query.network_subnet_short}}
+        Address={{.address.internal}}/{{.global.network.subnet.short}}
+        Address={{.global.network.gateway.address}}/{{.global.network.subnet.short}}
         DNS={{.address.internal}}
         IPForward=ipv4
         IPMasquerade=yes
@@ -152,8 +152,8 @@ systemd:
           -v /opt/cluster-config/matchbox:/var/lib/matchbox:Z \
           -v /opt/cluster-config/matchbox/etc:/etc/matchbox:Z,ro \
           quay.io/coreos/matchbox \
-            -address={{.request.query.gateway_address}}:8080 \
-            -rpc-address={{.request.query.gateway_address|}:8081 \
+            -address={{.global.network.gateway.address}}:8080 \
+            -rpc-address={{.global.netowork.gateway.address}}:8081 \
             -log-level=debug \
             -assets-path=/var/lib/matchbox/assets
         ExecStop=/usr/bin/docker stop matchbox
@@ -177,12 +177,12 @@ systemd:
         ExecStart=/usr/bin/docker run --name=dnsmasq --cap-add=NET_ADMIN --net=host quay.io/coreos/dnsmasq -d -q \
           --interface={{.interface.internal}} \
           --dhcp-option=3,{{.address.internal}} \
-          --dhcp-range={{.interface.internal}},{{.request.query.network_dhcp_start}},{{.request.query.network_dhcp_end}},12h \
+          --dhcp-range={{.interface.internal}},{{.global.network.dhcp.start}},{{.global.network.dhcp.end}},12h \
           --enable-tftp --tftp-root=/var/lib/tftpboot \
           --dhcp-userclass=set:ipxe,iPXE \
           --dhcp-boot=tag:#ipxe,undionly.kpxe \
-          --dhcp-boot=tag:ipxe,http://{{.request.query.gateway_address}}:8080/boot.ipxe \
-          --address=/{{.hostname}}.{{.request.query.network_domain|}/{{.address.internal}} \
+          --dhcp-boot=tag:ipxe,http://{{.global.network.gateway.address}}:8080/boot.ipxe \
+          --address=/{{.hostname}}.{{.global.network.domain}}/{{.address.internal}} \
           --log-queries \
           --log-dhcp
         ExecStop=/usr/bin/docker stop dnsmasq

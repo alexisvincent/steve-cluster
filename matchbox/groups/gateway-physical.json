@@ -1,8 +1,0 @@
-{
-  "id": "gateway",
-  "name": "Gateway",
-  "selector": {
-    "mac": "00:1e:c9:d0:9e:e2"
-  },
-  "profile": "gateway.gen"
-}

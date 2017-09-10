@@ -1,0 +1,18 @@
+{
+  "id": "gateway-2",
+  "name": "Gateway (VM)",
+  "selector": {
+    "mac": "00:0C:29:90:A9:FD"
+  },
+  "profile": "gateway.gen",
+  "metadata": {
+    "hostname": "gateway-2",
+    "interface": {
+      "internal": "ens34", 
+      "external": "ens33"
+    },
+    "address": {
+      "internal": "10.10.0.3"
+    }
+  }
+}

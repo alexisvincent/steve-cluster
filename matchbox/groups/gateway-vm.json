@@ -1,8 +1,0 @@
-{
-  "id": "gateway-vm",
-  "name": "Gateway (VM)",
-  "selector": {
-    "mac": "00:0C:29:90:A9:FD"
-  },
-  "profile": "gateway.gen"
-}

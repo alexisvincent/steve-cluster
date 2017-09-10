@@ -1,0 +1,18 @@
+{
+  "id": "gateway-3",
+  "name": "Gateway (bootstrapper)",
+  "selector": {
+    "mac": "00:0c:29:8f:62:22"
+  },
+  "profile": "gateway.gen",
+  "metadata": {
+    "hostname": "gateway-3",
+    "interface": {
+      "internal": "ens34", 
+      "external": "ens33"
+    },
+    "address": {
+      "internal": "10.10.0.4"
+    }
+  }
+}

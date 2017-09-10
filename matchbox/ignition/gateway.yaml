@@ -25,60 +25,65 @@ storage:
       filesystem: root
       mode: 0644
       contents: 
-        inline: gateway
+        inline: {{.hostname}}
 
-    - path: /root/.ssh/known_hosts
-      filesystem: root
-      mode: 0644
-      contents: 
-        inline: ""
+    # - path: /root/.ssh/known_hosts
+    #   filesystem: root
+    #   mode: 0644
+    #   contents: 
+    #     inline: ""
 
-    - path: /root/.ssh/id_rsa
-      filesystem: root
-      mode: 0600
-      contents:
-        remote:
-          url: http://{|network.bootstrapper.address.internal|}:8080/assets/keys/bootstrapper
+    # - path: /root/.ssh/id_rsa
+    #   filesystem: root
+    #   mode: 0600
+    #   contents:
+    #     remote:
+    #       url: http://{|network.bootstrapper.address.internal|}:8080/assets/keys/bootstrapper
 
-    - path: /root/.ssh/id_rsa.pub
-      filesystem: root
-      mode: 0600
-      contents:
-        remote:
-          url: http://{|network.bootstrapper.address.internal|}:8080/assets/keys/bootstrapper.pub
+    # - path: /root/.ssh/id_rsa.pub
+    #   filesystem: root
+    #   mode: 0600
+    #   contents:
+    #     remote:
+    #       url: http://{|network.bootstrapper.address.internal|}:8080/assets/keys/bootstrapper.pub
 
 networkd:
   units:
     - name: gateway.network
       contents: |
         [Match]
-        Name={|network.gateway.interface.internal|}
+        Name={{.interface.internal}}
 
         [Network]
-        DNS={|network.gateway.address.internal|}
-        Address={|network.gateway.address.internal|}/{|network.subnet.short|}
+        DNS={{.address.internal}}
+        Address={{.address.internal}}/{|network.subnet.short|}
         IPForward=ipv4
         IPMasquerade=yes
 
 systemd:
   units:
-    - name: download-assets.service
+    - name: assets.path
       enable: true
       contents: |
         [Unit]
-        Description=Download the github repository containing cluster config
-        Requires=network-online.target docker.service
-        After=network-online.target docker.service
-        ConditionPathExists=!/opt/cluster-config
-        ConditionHost=gateway
+        Description=Wait for assets to be pushed
+        [Path]
+        PathExists=/opt/cluster-config/assets.ready
+        [Install]
+        WantedBy=multi-user.target
+
+    - name: assets.service
+      enable: true
+      contents: |
+        [Unit]
+        Description=Wait for assets to be pushed (assets.path) and then delete it
 
         [Service]
-        ExecStartPre=/usr/bin/mkdir -p /opt/cluster-config
-        ExecStartPre=/usr/bin/sh -c 'ssh-keyscan {|network.bootstrapper.address.internal|} >> /root/.ssh/known_hosts'
-        ExecStart=/usr/bin/rsync -Pza core@{|network.bootstrapper.address.internal|}:/opt/cluster-config/ /opt/cluster-config
-        ExecStartPost=/usr/bin/sh -c '/usr/bin/docker load < /opt/cluster-config/matchbox/assets/pynetkey.tar'
-        Restart=no
-
+        Type=oneshot
+        ExecStartPre=/usr/bin/rm /opt/cluster-config/assets.ready
+        ExecStart=/usr/bin/bash -s 'docker load < /opt/cluster-config/matchbox/assets/pynetkey.tar'
+        RemainAfterExit=true
+        
         [Install]
         WantedBy=multi-user.target
 
@@ -87,9 +92,8 @@ systemd:
       contents: |
         [Unit]
         Description=Open pynetkey to enable internet access
-        After=docker.service download-assets.service
-        Requires=docker.service download-assets.service
-        ConditionHost=gateway
+        After=docker.service assets.service
+        Requires=docker.service assets.service
 
         [Service]
         ExecStartPre=-/usr/bin/docker kill pynetkey
@@ -109,20 +113,19 @@ systemd:
       contents: |
         [Unit]
         Description=CoreOS matchbox Server
-        After=docker.service download-assets.service pynetkey.service
-        Requires=docker.service download-assets.service pynetkey.service
+        After=docker.service pynetkey.service
+        Requires=docker.service pynetkey.service
 
         [Service]
-        Environment="MATCHBOX_PATH=/opt/cluster-config/matchbox"
         ExecStartPre=-/usr/bin/docker kill matchbox
         ExecStartPre=-/usr/bin/docker rm matchbox
         ExecStartPre=/usr/bin/docker pull quay.io/coreos/matchbox
         ExecStart=/usr/bin/docker run --name=matchbox --net=host \
-          -v ${MATCHBOX_PATH}:/var/lib/matchbox:Z \
-          -v ${MATCHBOX_PATH}/etc:/etc/matchbox:Z,ro \
+          -v /opt/cluster-config/matchbox:/var/lib/matchbox:Z \
+          -v /opt/cluster-config/matchbox/etc:/etc/matchbox:Z,ro \
           quay.io/coreos/matchbox \
-            -address={|network.gateway.address.internal|}:8080 \
-            -rpc-address={|network.gateway.address.internal|}:8081 \
+            -address={{.address.internal}}:8080 \
+            -rpc-address={{.address.internal}}:8081 \
             -log-level=debug \
             -assets-path=/var/lib/matchbox/assets
         ExecStop=/usr/bin/docker stop matchbox
@@ -140,20 +143,18 @@ systemd:
         Requires=docker.service matchbox.service
 
         [Service]
-        Environment="IMAGE=quay.io/coreos/dnsmasq"
-        Environment="FQDOMAIN={|network.gateway.hostname|}.{|network.domain|}"
         ExecStartPre=-/usr/bin/docker kill dnsmasq
         ExecStartPre=-/usr/bin/docker rm dnsmasq
-        ExecStartPre=/usr/bin/docker pull ${IMAGE}
-        ExecStart=/usr/bin/docker run --name=dnsmasq --cap-add=NET_ADMIN --net=host ${IMAGE} -d -q \
-          --interface={|network.gateway.interface.internal|} \
-          --dhcp-option=3,{|network.gateway.address.internal|} \
-          --dhcp-range={|network.gateway.interface.internal|},{|network.dhcp.start|},{|network.dhcp.end|},12h \
+        ExecStartPre=/usr/bin/docker pull quay.io/coreos/dnsmasq
+        ExecStart=/usr/bin/docker run --name=dnsmasq --cap-add=NET_ADMIN --net=host quay.io/coreos/dnsmasq -d -q \
+          --interface={{.interface.internal}} \
+          --dhcp-option=3,{{.address.internal}} \
+          --dhcp-range={{.interface.internal}},{|network.dhcp.start|},{|network.dhcp.end|},12h \
           --enable-tftp --tftp-root=/var/lib/tftpboot \
           --dhcp-userclass=set:ipxe,iPXE \
           --dhcp-boot=tag:#ipxe,undionly.kpxe \
-          --dhcp-boot=tag:ipxe,http://${FQDOMAIN}:8080/boot.ipxe \
-          --address=/${FQDOMAIN}/{|network.gateway.address.internal|} \
+          --dhcp-boot=tag:ipxe,http://{{.hostname}}.{|network.domain|}:8080/boot.ipxe \
+          --address=/{{.hostname}}.{|network.domain|}/{{.address.internal}} \
           --log-queries \
           --log-dhcp
         ExecStop=/usr/bin/docker stop dnsmasq

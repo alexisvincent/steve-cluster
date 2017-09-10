@@ -804,7 +804,7 @@ HEREDOC
 matchbox() {
   docker run --rm -p 8080:8080 -p 8081:8081 \
     -v $(pwd)/matchbox:/var/lib/matchbox:Z \
-    -v $(pwd)/matchbox/etc:/etc/matchbox:Z,ro \
+    -v $(pwd)/matchbox/etc/tls:/etc/matchbox:Z,ro \
     quay.io/coreos/matchbox \
       -address=0.0.0.0:8080 \
       -rpc-address=0.0.0.0:8081 \

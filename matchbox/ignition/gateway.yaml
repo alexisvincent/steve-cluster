@@ -150,7 +150,7 @@ systemd:
         ExecStartPre=/usr/bin/docker pull quay.io/coreos/matchbox
         ExecStart=/usr/bin/docker run --name=matchbox --net=host \
           -v /opt/cluster-config/matchbox:/var/lib/matchbox:Z \
-          -v /opt/cluster-config/matchbox/etc:/etc/matchbox:Z,ro \
+          -v /opt/cluster-config/matchbox/etc/tls:/etc/matchbox:Z,ro \
           quay.io/coreos/matchbox \
             -address={{.global.network.gateway.address}}:8080 \
             -rpc-address={{.global.network.gateway.address}}:8081 \

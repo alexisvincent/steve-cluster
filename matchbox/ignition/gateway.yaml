@@ -15,7 +15,7 @@
 passwd:
   users:
     - name: core
-      password_hash: "$2a$10$1SoiF1NIXKhErUsY1XKDLOs9I4W9INvgowHQ5Ucrzrm9CUvX7/1yW"
+      password_hash: "$6$rounds=4096$LP6daiKkb6c$MGeaex639HmrfnglLpYsxPPruEovlzmkqgvbrouiDmv9XH/zEo7rM9ja/y9ur89OveohZ8VUf8NbdgjGRyEOi1"
       ssh_authorized_keys:
         - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCk8CU3Bi1KFNcfQXpEdxz7HyfY1rh0MnuSVDFRTKcIIfboE5uMj0k7S/K1odIYFafs2Q8QgR/WmaZ15VAu9MvYfnmE9iPuB9PUa8YVkGeAxjIq929RICbYJCAgNen0lWqV9QQiulhU8A76Ot1CbNSIJgND4KbBUfZqjrCTO4lWbkisYwickbyi1j8FSTLcVmHkMYSOcFbueVXQrO6OXZQtLGa8HwRbY6kA3O6klzei1eMMzADLSjCuLKX7q0taYSQk80Joll2txD5bwId3SRvxZAenHrLZLkXzD7k68hxbpmTltMrwdAtOouNzyNuNCLaxEHUygQLxIBGEcOkFNA6e954GPMIf/IV6X4wmAnA9kqBbxGCC6b7KA+e2s8eusEWCA4lie1kJt4aQqImpquqpbft9wHDx16Qsh/Tqj7ZKG7bbPox82N2MRSl+RpxnOIjc8/xIFdrjELOH/zjI4milIT8BiSdGhQjk0ABTZWcVF9nf8eGxtw3oMKyYfhMrZ3+WRny0ut/4cyLwQJdbqi3so4sLJ51A6YLB4kpGRYRb8gChZZFh6uiwMPj057J9VOEbZE6hpQnXgatUMvmNfCFztj4+RmRiFo7l0YXz6DmocxqlEtXR2bOEVYq77Edc/YNDM5lIh5Wl3Bno0qsZ+KXoG7BASgP1qWBY5x25+nXwLQ== alexisvincent@Zeus.local
 
@@ -153,7 +153,7 @@ systemd:
           -v /opt/cluster-config/matchbox/etc:/etc/matchbox:Z,ro \
           quay.io/coreos/matchbox \
             -address={{.global.network.gateway.address}}:8080 \
-            -rpc-address={{.global.netowork.gateway.address}}:8081 \
+            -rpc-address={{.global.network.gateway.address}}:8081 \
             -log-level=debug \
             -assets-path=/var/lib/matchbox/assets
         ExecStop=/usr/bin/docker stop matchbox

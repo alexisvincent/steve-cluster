@@ -856,19 +856,20 @@ compile() {
 
     const gateway_1 = requireJSON('./matchbox/groups/gateway.1.json.template')
     const gateway_2_vm = requireJSON('./matchbox/groups/gateway.2.vm.json.template')
-    const gateway_3_vm = requireJSON('./matchbox/groups/gateway.2.vm.json.template')
+    const gateway_3_vm = requireJSON('./matchbox/groups/gateway.3.vm.json.template')
     const coreos_install = requireJSON('./matchbox/groups/coreos-install.json.template')
 
-    gateway_1.global = variables
-    gateway_2_vm.global = variables
-    gateway_3_vm.global = variables
-    gateway_3_vm.global = variables
-    coreos_install.global = variables
+    gateway_1.metadata.global = variables
+    gateway_2_vm.metadata.global = variables
+    gateway_3_vm.metadata.global = variables
+    gateway_3_vm.metadata.global = variables
+    coreos_install.metadata = coreos_install.metadata || {}
+    coreos_install.metadata.global = variables
 
-    fs.writeFileSync('matchbox/groups/gateway.1.gen.json', JSON.stringify(gateway_1,null, ' '))
-    fs.writeFileSync('matchbox/groups/gateway.2_vm.gen.json',JSON.stringify(gateway_2_vm,null, ' ') )
-    fs.writeFileSync('matchbox/groups/gateway.3_vm.gen.json',JSON.stringify(gateway_3_vm,null, ' ') )
-    fs.writeFileSync('matchbox/groups/coreos-install.gen.json', JSON.stringify(coreos_install,null, ' '))
+    fs.writeFileSync('matchbox/groups/gateway.1.json', JSON.stringify(gateway_1,null, ' '))
+    fs.writeFileSync('matchbox/groups/gateway.2_vm.json',JSON.stringify(gateway_2_vm,null, ' ') )
+    fs.writeFileSync('matchbox/groups/gateway.3_vm.json',JSON.stringify(gateway_3_vm,null, ' ') )
+    fs.writeFileSync('matchbox/groups/coreos-install.json', JSON.stringify(coreos_install,null, ' '))
 
     const profiles_gateway = fs.readFileSync('matchbox/profiles/gateway.json', 'utf8');
     fs.writeFileSync('matchbox/profiles/gateway.gen.json', Mustache.render(profiles_gateway, variables))

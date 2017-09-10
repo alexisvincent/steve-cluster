@@ -70,8 +70,8 @@ networkd:
         Name={{.interface.internal}}
 
         [Network]
-        Address={{.request.query.gateway_address}}/{{.request.query.network_subnet_short}}
         Address={{.address.internal}}/{{.request.query.network_subnet_short}}
+        Address={{.request.query.gateway_address}}/{{.request.query.network_subnet_short}}
         DNS={{.address.internal}}
         IPForward=ipv4
         IPMasquerade=yes

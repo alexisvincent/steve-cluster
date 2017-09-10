@@ -5,7 +5,7 @@
     "kernel": "/assets/coreos/{|coreos.version|}/coreos_production_pxe.vmlinuz",
     "initrd": ["/assets/coreos/{|coreos.version|}/coreos_production_pxe_image.cpio.gz"],
     "args": [
-      "coreos.config.url=http://{|network.gateway.address|}:8080/ignition?uuid=${uuid}&mac=${mac:hexhyp}&gateway_address={|network.gateway.address|}&network_dhcp_start={|network.dhcp.start|}&network_dhcp_end={|network.dhcp.end|}&network_subnet_short={|network.subnet.short|&network_domain={|network.domain|}}",
+      "coreos.config.url=http://{|network.gateway.address|}:8080/ignition?uuid=${uuid}&mac=${mac:hexhyp}&gateway_address={|network.gateway.address|}&network_dhcp_start={|network.dhcp.start|}&network_dhcp_end={|network.dhcp.end|}&network_subnet_short={|network.subnet.short|}&network_domain={|network.domain|}",
       "coreos.first_boot=yes",
       "coreos.autologin",
       "console=tty0",

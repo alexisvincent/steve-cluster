@@ -22,7 +22,7 @@ storage:
           curl --retry 10 --fail "http://{{.global.network.gateway.address}}:8080/ignition?{{.request.raw_query}}&os=installing" -o ignition.json
           coreos-install -d /dev/sda -C {{.global.coreos.channel}} -V {{.global.coreos.version}} -i ignition.json -b http://{{.global.network.gateway.address}}:8080/assets/coreos
           udevadm settle
-          systemctl reboot
+          # systemctl reboot
 {{ if index . "ssh_authorized_keys" }}
 passwd:
   users:

@@ -1,0 +1,20 @@
+{
+  "id": "node-2",
+  "name": "Node 2",
+  "selector": {
+    "mac": "00:1e:4f:28:30:10",
+    "os": "installing"
+  },
+  "profile": "gateway.gen",
+  "metadata": {
+    "hostname": "node-2",
+    "pynetkey": false,
+    "interface": {
+      "internal": "eno1", 
+      "external": "eno2"
+    },
+    "address": {
+      "internal": "10.10.0.7"
+    }
+  }
+}

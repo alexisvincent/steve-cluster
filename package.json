@@ -1,8 +1,0 @@
-{
-  "name": "steve-cli",
-  "version": "0.0.0",
-  "dependencies": {
-    "js-yaml": "^3.9.0",
-    "mustache": "^2.3.0"
-  }
-}

@@ -141,3 +141,15 @@ variable "gateway_address" {
   type = "string"
   description = "shared address of the gateway"
 }
+
+variable "machines" {
+   type = "list"
+   default = [
+      {
+          field = "value"
+      },
+      {
+          field = "value"
+      }
+   ]
+}

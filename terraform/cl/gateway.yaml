@@ -21,6 +21,13 @@ passwd:
 
 storage:
   files:
+    - path: /etc/dnsmasq.conf
+      filesystem: root
+      mode: 0644
+      contents: 
+        inline: |
+${dnsmasq_conf}
+
     - path: /etc/hostname
       filesystem: root
       mode: 0644
@@ -152,8 +159,8 @@ systemd:
           -v /opt/cluster-config/matchbox:/var/lib/matchbox:Z \
           -v /opt/cluster-config/matchbox/etc/tls:/etc/matchbox:Z,ro \
           quay.io/coreos/matchbox \
-            -address={{.address_internal}}:8080 \
-            -rpc-address={{.address_internal}}:8081 \
+            -address=${gateway_address}:8080 \
+            -rpc-address=${gateway_address}:8081 \
             -log-level=debug \
             -assets-path=/var/lib/matchbox/assets
         ExecStop=/usr/bin/docker stop matchbox
@@ -174,17 +181,18 @@ systemd:
         ExecStartPre=-/usr/bin/docker kill dnsmasq
         ExecStartPre=-/usr/bin/docker rm dnsmasq
         ExecStartPre=/usr/bin/docker pull quay.io/coreos/dnsmasq
-        ExecStart=/usr/bin/docker run --name=dnsmasq --cap-add=NET_ADMIN --net=host quay.io/coreos/dnsmasq -d -q \
-          --interface={{.interface.internal}} \
-          --dhcp-option=3,${gateway_address} \
-          --dhcp-range={{.interface.internal}},${dhcp_start},${dhcp_end},12h \
-          --enable-tftp --tftp-root=/var/lib/tftpboot \
-          --dhcp-userclass=set:ipxe,iPXE \
-          --dhcp-boot=tag:#ipxe,undionly.kpxe \
-          --dhcp-boot=tag:ipxe,http://{{.address_internal}}:8080/boot.ipxe \
-          --address=/{{.hostname}}.${network_domain}/{{.address.internal}} \
-          --log-queries \
-          --log-dhcp
+        ExecStart=/usr/bin/docker run \
+          --name=dnsmasq --cap-add=NET_ADMIN --net=host \
+          -v /etc/dnsmasq.conf:/etc/dnsmasq.conf quay.io/coreos/dnsmasq -d -q \
+            --interface={{.interface_internal}} \
+            --dhcp-option=3,${gateway_address} \
+            --dhcp-range={{.interface_internal}},${dhcp_start},${dhcp_end},12h \
+            --enable-tftp --tftp-root=/var/lib/tftpboot \
+            --dhcp-userclass=set:ipxe,iPXE \
+            --dhcp-boot=tag:#ipxe,undionly.kpxe \
+            --dhcp-boot=tag:ipxe,http://${gateway_address}:8080/boot.ipxe \
+            --log-queries \
+            --log-dhcp
         ExecStop=/usr/bin/docker stop dnsmasq
         Restart=always
 

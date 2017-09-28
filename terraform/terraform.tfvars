@@ -9,18 +9,12 @@ container_linux_version = "1465.7.0"
 container_linux_channel = "stable"
 
 # Machines
-# controller_names = ["vm3"]
-# controller_macs = ["00:50:56:3A:09:94"]
-# controller_domains = ["vm3.steve"]
-# worker_names = ["vm4"]
-# worker_macs = ["00:0C:29:44:0C:18"]
-# worker_domains = ["vm4.steve"]
-controller_names = ["n1"]
-controller_macs = ["00:1e:4f:28:30:12"]
-controller_domains = ["n1.steve"]
-worker_names = ["n4"]
-worker_macs = ["00:22:19:8e:15:77"]
-worker_domains = ["n4.steve"]
+controller_names = ["n2"]
+controller_macs = ["00:1E:4F:28:30:12"]
+controller_domains = ["n2.steve"]
+worker_names = ["n3","n4"]
+worker_macs = ["00:22:19:AB:7E:78","00:22:19:8E:15:77"]
+worker_domains = ["n3.steve","n4.steve"]
 
 # Bootkube
 k8s_domain_name = "steve"

@@ -61,10 +61,26 @@ resource "matchbox_group" "install-reboot" {
   name = "install-reboot"
   profile = "cached-container-linux-install"
   selector {
-
   }
   metadata {
     ssh_authorized_key = "${var.ssh_authorized_key}"
+  }
+}
+
+resource "matchbox_group" "n1" {
+  name = "n1"
+  profile = "${matchbox_profile.gateway.name}"
+  selector {
+    mac = "00:22:19:8E:26:AC"
+    os = "installed"
+  }
+  metadata {
+    ssh_authorized_key = "${var.ssh_authorized_key}"
+    hostname = "n1"
+    pynetkey = "true"
+    interface_internal = "eno2"
+    interface_external = "eno1"
+    address_internal = "10.10.1.1"
   }
 }
 
@@ -85,22 +101,22 @@ resource "matchbox_group" "install-reboot" {
 #   }
 # }
 
-resource "matchbox_group" "n20" {
-  name = "n20-gateway"
-  profile = "${matchbox_profile.gateway.name}"
-  selector {
-    mac = "00:1e:c9:d0:9e:e4"
-    os = "installed"
-  }
-  metadata {
-    ssh_authorized_key = "${var.ssh_authorized_key}"
-    hostname = "n20"
-    pynetkey = "true"
-    interface_internal = "eno2"
-    interface_external = "eno1"
-    address_internal = "10.10.1.20"
-  }
-}
+# resource "matchbox_group" "n20" {
+#   name = "n20-gateway"
+#   profile = "${matchbox_profile.gateway.name}"
+#   selector {
+#     mac = "00:1e:c9:d0:9e:e4"
+#     os = "installed"
+#   }
+#   metadata {
+#     ssh_authorized_key = "${var.ssh_authorized_key}"
+#     hostname = "n20"
+#     pynetkey = "true"
+#     interface_internal = "eno2"
+#     interface_external = "eno1"
+#     address_internal = "10.10.1.20"
+#   }
+# }
 
 # resource "matchbox_group" "n4" {
 #   name = "n4-gateway"

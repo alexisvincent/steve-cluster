@@ -18,6 +18,8 @@ data "template_file" "cl_gateway" {
           address=/n6.${var.network_domain}/10.10.1.6
           address=/n7.${var.network_domain}/10.10.1.7
           address=/n8.${var.network_domain}/10.10.1.8
+          address=/n9.${var.network_domain}/10.10.1.9
+          address=/n10.${var.network_domain}/10.10.1.10
 
           address=/vm1.${var.network_domain}/10.10.10.1
           address=/vm2.${var.network_domain}/10.10.10.2
@@ -27,14 +29,15 @@ data "template_file" "cl_gateway" {
           address=/vm6.${var.network_domain}/10.10.10.6
           address=/vm7.${var.network_domain}/10.10.10.7
           address=/vm8.${var.network_domain}/10.10.10.8
+          address=/vm9.${var.network_domain}/10.10.10.9
+          address=/vm10.${var.network_domain}/10.10.10.10
 
-          dhcp-host=00:1e:4f:28:30:10,10.10.1.1
-          dhcp-host=00:22:19:8e:15:77,10.10.1.4
+          dhcp-host=00:22:19:8E:26:AC,10.10.1.1
+          dhcp-host=00:1E:4F:28:30:12,10.10.1.2
+          dhcp-host=00:22:19:AB:7E:78,10.10.1.3
+          dhcp-host=00:22:19:8E:15:77,10.10.1.4
 
           dhcp-host=00:0C:29:8F:62:18,10.10.10.1
-          dhcp-host=00:0C:29:90:A9:F3,10.10.10.2
-          dhcp-host=00:50:56:3A:09:94,10.10.10.3
-          dhcp-host=00:0C:29:44:0C:18,10.10.10.4
 EOF
   }
 }
@@ -135,22 +138,22 @@ resource "matchbox_group" "n1" {
 #   }
 # }
 
-# resource "matchbox_group" "vm1" {
-#   name = "vm1-gateway"
-#   profile = "${matchbox_profile.gateway.name}"
-#   selector {
-#     mac = "00:0C:29:8F:62:18"
-#     os = "installed"
-#   }
-#   metadata {
-#     ssh_authorized_key = "${var.ssh_authorized_key}"
-#     hostname = "vm1"
-#     pynetkey = "false"
-#     interface_internal = "ens33"
-#     interface_external = "ens34"
-#     address_internal = "10.10.10.1"
-#   }
-# }
+resource "matchbox_group" "vm1" {
+  name = "vm1"
+  profile = "${matchbox_profile.gateway.name}"
+  selector {
+    mac = "00:0C:29:8F:62:18"
+    os = "installed"
+  }
+  metadata {
+    ssh_authorized_key = "${var.ssh_authorized_key}"
+    hostname = "vm1"
+    pynetkey = "false"
+    interface_internal = "ens33"
+    interface_external = "ens34"
+    address_internal = "10.10.10.1"
+  }
+}
 
 # resource "matchbox_group" "vm2" {
 #   name = "vm2-gateway"

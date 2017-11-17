@@ -1,6 +1,6 @@
 // Self-hosted Kubernetes cluster
 module "kubernetes" {
-  source = "git::https://github.com/alexisvincent/typhoon//bare-metal/container-linux/kubernetes"
+  source = "git::https://github.com/poseidon/typhoon//bare-metal/container-linux/kubernetes"
 
   matchbox_http_endpoint  = "${var.matchbox_http_endpoint}"
 

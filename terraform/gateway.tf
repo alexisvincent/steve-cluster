@@ -10,6 +10,8 @@ data "template_file" "cl_gateway" {
     dnsmasq_conf = <<EOF
           address=/gateway.${var.network_domain}/10.10.0.1
 
+          address=/${var.network_domain}/10.10.1.2
+
           address=/n1.${var.network_domain}/10.10.1.1
           address=/n2.${var.network_domain}/10.10.1.2
           address=/n3.${var.network_domain}/10.10.1.3
@@ -20,6 +22,9 @@ data "template_file" "cl_gateway" {
           address=/n8.${var.network_domain}/10.10.1.8
           address=/n9.${var.network_domain}/10.10.1.9
           address=/n10.${var.network_domain}/10.10.1.10
+          address=/n11.${var.network_domain}/10.10.1.11
+          address=/n12.${var.network_domain}/10.10.1.12
+          address=/n13.${var.network_domain}/10.10.1.13
 
           address=/vm1.${var.network_domain}/10.10.10.1
           address=/vm2.${var.network_domain}/10.10.10.2
@@ -36,8 +41,20 @@ data "template_file" "cl_gateway" {
           dhcp-host=00:1E:4F:28:30:12,10.10.1.2
           dhcp-host=00:22:19:AB:7E:78,10.10.1.3
           dhcp-host=00:22:19:8E:15:77,10.10.1.4
+          dhcp-host=00:1E:C9:D0:AA:9E,10.10.1.5
+          dhcp-host=00:22:19:8E:26:B6,10.10.1.6
+          dhcp-host=00:22:19:8E:25:A1,10.10.1.7
+          dhcp-host=00:1E:C9:D0:9E:E4,10.10.1.8
+          dhcp-host=00:1E:C9:D0:AA:BC,10.10.1.9
+          dhcp-host=00:1A:A0:15:E3:76,10.10.1.10
+          dhcp-host=00:1D:09:05:9A:C0,10.10.1.11
+          dhcp-host=00:1A:A0:26:DA:B6,10.10.1.12
+          dhcp-host=00:1D:09:05:98:DC,10.10.1.13
 
-          dhcp-host=00:0C:29:8F:62:18,10.10.10.1
+          dhcp-host=00:0C:29:90:A9:F3,10.10.10.1
+          dhcp-host=00:50:56:30:35:90,10.10.10.2
+          dhcp-host=00:50:56:3A:89:44,10.10.10.3
+          dhcp-host=00:50:56:35:AE:C8,10.10.10.4
 EOF
   }
 }
@@ -142,7 +159,7 @@ resource "matchbox_group" "vm1" {
   name = "vm1"
   profile = "${matchbox_profile.gateway.name}"
   selector {
-    mac = "00:0C:29:8F:62:18"
+    mac = "00:0C:29:90:A9:F3"
     os = "installed"
   }
   metadata {

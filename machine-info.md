@@ -1,15 +1,24 @@
 Machine Info
 
 ## Assigned
-| Node Type | Hostname | Responsibility | MAC 1             | MAC 2             | Interface 1 | Interface 2 |
-|-----------|----------|----------------|-------------------|-------------------|-------------|-------------|
-| Physical  | n1       | * gateway      | 00:22:19:8E:26:AA | 00:22:19:8E:26:AC | eno1        | eno2        |
-| Physical  | n2       | controller     | 00:1E:4F:28:30:10 | 00:1E:4F:28:30:12 | eno1        | eno2        |
-| Physical  | n3       | minion         | 00:22:19:AB:7E:76 | 00:22:19:AB:7E:78 | eno1        | eno2        |
-| Physical  | n4       | minion         | 00:22:19:8E:15:75 | 00:22:19:8E:15:77 | eno1        | eno2        |
-| VM        | vm1      | * gateway      | 00:0C:29:8F:62:18 | 00:0C:29:8F:62:22 | ens33       | ens34       |
+| Host | Type  | MAC 1             | MAC 2             | Ifc 1 | Ifc 2 |
+|------| ------|-------------------|-------------------|-------|-------|
 
-## Unassigned
-| Node Type | Hostname | Responsibility | MAC 1             | MAC 2             | Interface 1 | Interface 2 |
-|-----------|----------|----------------|-------------------|-------------------|-------------|-------------|
-| Physical  |          | * NA           | 00:1E:C9:D0:9E:E2 | 00:1E:C9:D0:9E:E4 | eno1        | eno2        |
+| n1   | gate  | 00:22:19:8E:26:AA | 00:22:19:8E:26:AC | eno1  | eno2  |
+| n2   | ctrl  | 00:1E:4F:28:30:10 | 00:1E:4F:28:30:12 | eno1  | eno2  |
+| n3   | min   | 00:22:19:AB:7E:76 | 00:22:19:AB:7E:78 | eno1  | eno2  |
+| n4   | min   | 00:22:19:8E:15:75 | 00:22:19:8E:15:77 | eno1  | eno2  |
+| n5   | min   | 00:1E:C9:D0:AA:9C | 00:1E:C9:D0:AA:9E | eno1  | eno2  |
+| n6   | min   | 00:22:19:8E:26:B4 | 00:22:19:8E:26:B6 | eno1  | eno2  |
+| n7   | min   | 00:22:19:8E:25:9F | 00:22:19:8E:25:A1 | eno1  | eno2  |
+| n8   | min   | 00:1E:C9:D0:9E:E2 | 00:1E:C9:D0:9E:E4 | eno1  | eno2  |
+| n9   | min   | 00:1E:C9:D0:AA:BA | 00:1E:C9:D0:AA:BC | eno1  | eno2  |
+| n10  | min   | 00:1A:A0:15:E3:74 | 00:1A:A0:15:E3:76 | eno1  | eno2  |
+| n11  | min   | 00:1D:09:05:9A:BE | 00:1D:09:05:9A:C0 | eno1  | eno2  |
+| n12  | min   | 00:1A:A0:26:DA:B4 | 00:1A:A0:26:DA:B6 | eno1  | eno2  |
+| n13  | min   | 00:1D:09:05:98:DA | 00:1D:09:05:98:DC | eno1  | eno2  |
+
+| vm1  | gate  | 00:0C:29:90:A9:F3 | 00:0C:29:90:A9:FD | ens33 | ens34 |
+| vm2  | ctrl  | 00:50:56:30:35:90 | 00:50:56:35:F0:70 | ens33 | ens34 |
+| vm3  | min   | 00:50:56:3A:89:44 | 00:50:56:2A:C7:38 | ens33 | ens34 |
+| vm4  | min   | 00:50:56:35:AE:C8 | 00:50:56:27:AC:04 | ens33 | ens34 |

@@ -981,7 +981,7 @@ Description:
   download coreos to assets
 HEREDOC
 download_coreos() {
-  curl https://raw.githubusercontent.com/coreos/matchbox/master/scripts/get-coreos | bash -s stable 1465.7.0 ./matchbox/assets
+  curl https://raw.githubusercontent.com/coreos/matchbox/master/scripts/get-coreos | bash -s stable 1520.6.0 ./matchbox/assets
 }
 
 desc "save_pynetkey" <<HEREDOC

@@ -734,14 +734,14 @@ help() {
   then
     cat <<HEREDOC
 
-    _________ __                      
-   /   _____//  |_  _______  __ ____  
-   \_____  \\   __\/ __ \  \/ // __ \ 
-   /        \|  | \  ___/\   /\  ___/ 
+    _________ __
+   /   _____//  |_  _______  __ ____
+   \_____  \\   __\/ __ \  \/ // __ \
+   /        \|  | \  ___/\   /\  ___/
   /_______  /|__|  \___  >\_/  \___  >
-          \/           \/          \/ 
+          \/           \/          \/
 
-A pretty cool cluster... dosn't like cats 
+A pretty cool cluster... dosn't like cats
 
 Version: ${_VERSION}
 
@@ -812,62 +812,6 @@ matchbox() {
       -assets-path=/var/lib/matchbox/assets
 }
 
-desc "dnsmasq" <<HEREDOC
-Usage:
-  ${_ME} dnsmasq
-
-Description:
-  Start a dnsmasq instance
-HEREDOC
-dnsmasq() {
-  # docker run --name=dnsmasq --cap-add=NET_ADMIN --net=host quay.io/coreos/dnsmasq -d -q \
-  #   --interface={{.interface.internal}} \
-  #   --dhcp-option=3,{{.address.internal}} \
-  #   --dhcp-range={{.interface.internal}},{|network.dhcp.start|},{|network.dhcp.end|},12h \
-  #   --enable-tftp --tftp-root=/var/lib/tftpboot \
-  #   --dhcp-userclass=set:ipxe,iPXE \
-  #   --dhcp-boot=tag:#ipxe,undionly.kpxe \
-  #   --dhcp-boot=tag:ipxe,http://{{.hostname}}.{|network.domain|}:8080/boot.ipxe \
-  #   --address=/{{.hostname}}.{|network.domain|}/{{.address.internal}} \
-  #   --log-queries \
-  #   --log-dhcp
-  echo "not implemented"
-}
-# desc "reload_services" <<HEREDOC
-# Usage:
-#   ${_ME} reload_services
-
-# Description:
-#   inject and reload systemd services
-# HEREDOC
-# reload_services() {
-#   echo 'injecting services'
-
-#   sudo systemctl stop download-assets
-#   sudo systemctl stop pynetkey
-#   sudo systemctl stop matchbox
-#   sudo systemctl stop dnsmasq
-
-#   sudo systemctl start download-assets
-#   sudo systemctl start pynetkey
-#   sudo systemctl start matchbox
-#   sudo systemctl start dnsmasq
-# }
-
-# desc "reload_network" <<HEREDOC
-# Usage:
-#   ${_ME} reload_network
-
-# Description:
-#   inject and reload networkd config
-# HEREDOC
-# reload_network() {
-#   sudo cp bootstrapper/network/gateway.network /etc/systemd/network/gateway.network
-
-#   sudo systemctl daemon-reload
-#   sudo systemctl restart systemd-networkd
-# }
-
 desc "ignition" <<HEREDOC
 Usage:
   ${_ME} ignition <host> <mac>
@@ -876,12 +820,12 @@ Description:
   render ignition for <mac> from matchbox instance at <host>
 HEREDOC
 ignition() {
-  if [[ ${#_COMMAND_ARGV[@]} = 1 ]]; 
+  if [[ ${#_COMMAND_ARGV[@]} = 1 ]];
   then desc --get "push";
-  else 
+  else
     host=${1:-}
     mac=${2:-}
-    url="http://${host}:8080/ignition?mac=${mac//\:/-}&os=installing"
+    url="http://${host}:8080/ignition?mac=${mac//\:/-}&os=installed"
     echo "downloading ignition from $url to ./ignition.json..."
     curl -sS $url -f -o ./ignition.json
     echo "successfully aquired ignition.json"
@@ -896,35 +840,10 @@ ignition() {
       if [[ $REPLY =~ ^[Yy]$ ]]
       then
         echo "installing coreos to /dev/sda..."
-        sudo coreos-install -b http://$host:8080/assets/coreos/ -d /dev/sda -i ./ignition.json -V 1465.7.0
+        sudo coreos-install -b http://$host:8080/assets/coreos/ -d /dev/sda -i ./ignition.json -V 1688.4.0
       fi
     fi
   fi
-}
-
-desc "pull" <<HEREDOC
-Usage:
-  ${_ME} pull <host>
-
-Description:
-  download config from remote computer
-HEREDOC
-pull() {
-  if [[ ${#_COMMAND_ARGV[@]} = 1 ]]; 
-    then desc --get "pull";
-    else 
-      echo "syncing..."
-      rsync -Pza core@${1:-}:/opt/cluster-config/ /opt/cluster-config
-      echo "done"
-      echo
-
-      read -p "Would you like to keep syncing? [yY]" -n 1 -r
-      echo 
-      if [[ $REPLY =~ ^[Yy]$ ]]
-      then
-        while true; do rsync -Pza core@${1:-}:/opt/cluster-config/ /opt/cluster-config && sleep 5; done
-      fi
-    fi
 }
 
 desc "push" <<HEREDOC
@@ -935,9 +854,9 @@ Description:
   push config to remote computer
 HEREDOC
 push() {
-  if [[ ${#_COMMAND_ARGV[@]} = 1 ]]; 
+  if [[ ${#_COMMAND_ARGV[@]} = 1 ]];
     then desc --get "push";
-    else 
+    else
       ssh core@${1:-} 'sudo mkdir -p /opt/cluster-config'
       ssh core@${1:-} 'sudo chown core /opt/cluster-config'
       echo "syncing..."
@@ -948,29 +867,12 @@ push() {
       echo
 
       read -p "Would you like to keep syncing? [yY]" -n 1 -r
-      echo 
+      echo
       if [[ $REPLY =~ ^[Yy]$ ]]
       then
         while true; do rsync -Pza . core@${1:-}:/opt/cluster-config; sleep 5; done
       fi
     fi
-}
-
-desc "push_cli" <<HEREDOC
-Usage:
-  ${_ME} push_cli <host>
-
-Description:
-  push cli to remote computer
-HEREDOC
-push_cli() {
-  if [[ ${#_COMMAND_ARGV[@]} = 1 ]]; 
-  then desc --get "push";
-  else 
-    echo "syncing..."
-    scp ./steve core@${1:-}:/home/core/steve
-    echo "done"
-  fi
 }
 
 desc "download_coreos" <<HEREDOC
@@ -981,18 +883,7 @@ Description:
   download coreos to assets
 HEREDOC
 download_coreos() {
-  curl https://raw.githubusercontent.com/coreos/matchbox/master/scripts/get-coreos | bash -s stable 1520.6.0 ./matchbox/assets
-}
-
-desc "save_pynetkey" <<HEREDOC
-Usage:
-  ${_ME} save_pynetkey
-
-Description:
-  save pynetkey image
-HEREDOC
-save_pynetkey() {
-  docker save alexisvincent/pynetkey > matchbox/assets/pynetkey.tar
+  curl https://raw.githubusercontent.com/coreos/matchbox/master/scripts/get-coreos | bash -s stable 1688.4.0 ./matchbox/assets
 }
 
 # Call the `_main` function after everything has been defined.

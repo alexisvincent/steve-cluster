@@ -108,7 +108,6 @@ variable "experimental_self_hosted_etcd" {
   description = "Create self-hosted etcd cluster as pods on Kubernetes, instead of on-hosts"
 }
 
-
 variable "network_domain" {
   default     = "cluster"
   description = "the domain name of the cluster"

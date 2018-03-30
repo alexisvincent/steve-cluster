@@ -11,7 +11,7 @@ Machine Info
 | n5   | min   | 00:1E:C9:D0:AA:9C | 00:1E:C9:D0:AA:9E | eno1  | eno2  |
 | n6   | min   | 00:22:19:8E:26:B4 | 00:22:19:8E:26:B6 | eno1  | eno2  |
 | n7   | min   | 00:22:19:8E:25:9F | 00:22:19:8E:25:A1 | eno1  | eno2  |
-| n8   | min   | 00:1E:C9:D0:9E:E2 | 00:1E:C9:D0:9E:E4 | eno1  | eno2  |
+| n8   | min   | 00:22:19:8E:25:FE | 00:22:19:8E:26:00 | eno1  | eno2  |
 | n9   | min   | 00:1E:C9:D0:AA:BA | 00:1E:C9:D0:AA:BC | eno1  | eno2  |
 | n10  | min   | 00:1A:A0:15:E3:74 | 00:1A:A0:15:E3:76 | eno1  | eno2  |
 | n11  | min   | 00:1D:09:05:9A:BE | 00:1D:09:05:9A:C0 | eno1  | eno2  |

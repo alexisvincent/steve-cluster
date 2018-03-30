@@ -79,7 +79,7 @@ resource "matchbox_profile" "gateway" {
 
 resource "matchbox_group" "install-reboot" {
   name = "install-reboot"
-  profile = "cached-container-linux-install"
+  profile = "steve-cached-container-linux-install"
   selector {
   }
   metadata {
@@ -104,87 +104,38 @@ resource "matchbox_group" "n1" {
   }
 }
 
-# resource "matchbox_group" "n1" {
-#   name = "n1-gateway"
-#   profile = "${matchbox_profile.gateway.name}"
-#   selector {
-#     mac = "00:1e:4f:28:30:12"
-#     os = "installed"
-#   }
-#   metadata {
-#     ssh_authorized_key = "${var.ssh_authorized_key}"
-#     hostname = "n1"
-#     pynetkey = "true"
-#     interface_internal = "eno2"
-#     interface_external = "eno1"
-#     address_internal = "10.10.1.1"
-#   }
-# }
-
-# resource "matchbox_group" "n20" {
-#   name = "n20-gateway"
-#   profile = "${matchbox_profile.gateway.name}"
-#   selector {
-#     mac = "00:1e:c9:d0:9e:e4"
-#     os = "installed"
-#   }
-#   metadata {
-#     ssh_authorized_key = "${var.ssh_authorized_key}"
-#     hostname = "n20"
-#     pynetkey = "true"
-#     interface_internal = "eno2"
-#     interface_external = "eno1"
-#     address_internal = "10.10.1.20"
-#   }
-# }
-
-# resource "matchbox_group" "n4" {
-#   name = "n4-gateway"
-#   profile = "${matchbox_profile.gateway.name}"
-#   selector {
-#     mac = "00:22:19:8e:15:77"
-#     os = "installed"
-#  }
-#   metadata {
-#     ssh_authorized_key = "${var.ssh_authorized_key}"
-#     hostname = "n4"
-#     pynetkey = "true"
-#     interface_internal = "eno2"
-#     interface_external = "eno1"
-#     address_internal = "10.10.1.1"
-#   }
-# }
-
+# set your internal interface mac for VM 1 to specified value
 resource "matchbox_group" "vm1" {
   name = "vm1"
   profile = "${matchbox_profile.gateway.name}"
   selector {
-    mac = "00:0C:29:90:A9:F3"
-    os = "installed"
+		mac = "08:00:27:FE:45:EF"
+    # os = "installed"
   }
   metadata {
     ssh_authorized_key = "${var.ssh_authorized_key}"
     hostname = "vm1"
     pynetkey = "false"
-    interface_internal = "ens33"
-    interface_external = "ens34"
+    interface_internal = "enp0s3"
+    interface_external = "enp0s8"
     address_internal = "10.10.10.1"
   }
 }
 
-# resource "matchbox_group" "vm2" {
-#   name = "vm2-gateway"
-#   profile = "${matchbox_profile.gateway.name}"
-#   selector {
-#     mac = "00:0C:29:90:A9:F3"
-#     os = "installed"
-#   }
-#   metadata {
-#     ssh_authorized_key = "${var.ssh_authorized_key}"
-#     hostname = "vm2"
-#     pynetkey = "false"
-#     interface_internal = "ens33"
-#     interface_external = "ens34"
-#     address_internal = "10.10.10.2"
-#   }
-# }
+# set your internal interface mac for VM 2 to specified value
+resource "matchbox_group" "vm2" {
+	name = "vm2"
+	profile = "${matchbox_profile.gateway.name}"
+	selector {
+		mac = "08:00:27:3A:40:26"
+		os = "installed"
+	}
+	metadata {
+		ssh_authorized_key = "${var.ssh_authorized_key}"
+		hostname = "vm1"
+		pynetkey = "false"
+		interface_internal = "enp0s3"
+		interface_external = "enp0s8"
+		address_internal = "10.10.10.1"
+	}
+}

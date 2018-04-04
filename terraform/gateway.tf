@@ -97,7 +97,6 @@ resource "matchbox_group" "n1" {
   metadata {
     ssh_authorized_key = "${var.ssh_authorized_key}"
     hostname = "n1"
-    pynetkey = "true"
     interface_internal = "eno2"
     interface_external = "eno1"
     address_internal = "10.10.1.1"
@@ -110,12 +109,11 @@ resource "matchbox_group" "vm1" {
   profile = "${matchbox_profile.gateway.name}"
   selector {
 		mac = "08:00:27:FE:45:EF"
-    # os = "installed"
+    os = "installed"
   }
   metadata {
     ssh_authorized_key = "${var.ssh_authorized_key}"
     hostname = "vm1"
-    pynetkey = "false"
     interface_internal = "enp0s3"
     interface_external = "enp0s8"
     address_internal = "10.10.10.1"
@@ -133,7 +131,6 @@ resource "matchbox_group" "vm2" {
 	metadata {
 		ssh_authorized_key = "${var.ssh_authorized_key}"
 		hostname = "vm1"
-		pynetkey = "false"
 		interface_internal = "enp0s3"
 		interface_external = "enp0s8"
 		address_internal = "10.10.10.1"

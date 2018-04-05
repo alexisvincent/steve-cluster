@@ -1,12 +1,15 @@
-ssh-keygen -f gateway_ssh
+ssh-keygen -f id_rsa
 
-cp gateway_ssh ~/.ssh/
-cp gateway_ssh.pub ~/.ssh/
+cp id_rsa ~/.ssh/
+cp id_rsa.pub ~/.ssh/
 
-sed 's/^/ssh_authorized_key = "/;s/$/"/' -i gateway_ssh.pub
+ssh-add ~/.ssh/id_rsa
+ssh-add -L
+
+sed 's/^/ssh_authorized_key = "/;s/$/"/' -i id_rsa.pub
 awk 'NR==FNR { a[n++]=$0; next } 
 /ssh_authorized_key =/ { for (i=0;i<n;++i) print a[i]; next }
-1' gateway_ssh.pub terraform.tfvars > tmp && mv tmp terraform.tfvars
+1' id_rsa.pub terraform.tfvars > tmp && mv tmp terraform.tfvars
 
-rm gateway_ssh
-rm gateway_ssh.pub
+rm id_rsa
+rm id_rsa.pub

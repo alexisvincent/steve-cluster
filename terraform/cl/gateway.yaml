@@ -16,8 +16,7 @@ passwd:
   users:
     - name: core
       password_hash: "$6$rounds=4096$LP6daiKkb6c$MGeaex639HmrfnglLpYsxPPruEovlzmkqgvbrouiDmv9XH/zEo7rM9ja/y9ur89OveohZ8VUf8NbdgjGRyEOi1"
-      ssh_authorized_keys:
-ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCvNtqxfgAd11riaET65bq/9Ed057FLopLvKQnbSjBoiQArDcDe4aQW5/nAYH5FS+apaxayDnptdww2UIvvNFiIuX4WsoakZL8WbzYAV2WMSyPz210ET0d+E/Sxu38r67ToWULh5hASOYe745DHJ3sNXCkWsAH/asgRRV9PtADCklJw1mn0LnTkEwW3ja3KA4CnBn7gmsURqmE4H80LPlp9JbU5BtDOSKtKcWvW/wWGG7ttOsEw60Py7EqhI3W3NvBjWvOR2ZoL2i4V+nLoDCIa/D0P7c0H5sNE/5y+0YC67wSDspxXWDYvZgd4OSRVXK5B7EPlvPFxdvRZRlAE9SP3 gerald@Gerald
+      ssh_authorized_keys: ""
 
 storage:
   files:

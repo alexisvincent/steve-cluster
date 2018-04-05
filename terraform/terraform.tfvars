@@ -1,7 +1,7 @@
 matchbox_http_endpoint = "http://10.10.0.1:8080"
 matchbox_rpc_endpoint = "10.10.0.1:8081"
 
-ssh_authorized_key = 
+ssh_authorized_key = ""
 
 cluster_name = "steve"
 container_linux_version = "1688.4.0"

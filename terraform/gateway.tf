@@ -53,8 +53,7 @@ data "template_file" "cl_gateway" {
 
           dhcp-host=00:0C:29:90:A9:F3,10.10.10.1
           dhcp-host=00:50:56:30:35:90,10.10.10.2
-          dhcp-host=00:50:56:3A:89:44,10.10.10.3
-          dhcp-host=00:50:56:35:AE:C8,10.10.10.4
+          dhcp-host=00:50:56:30:35:91,10.10.10.3
 EOF
   }
 }

@@ -76,9 +76,9 @@ resource "matchbox_profile" "gateway" {
   container_linux_config = "${data.template_file.cl_gateway.rendered}"
 }
 
-resource "matchbox_group" "install-reboot-n1" {
-  name = "install-reboot"
-  profile = "steve-cached-container-linux-install-n2"
+resource "matchbox_group" "install-reboot-vm1" {
+  name = "install-reboot-vm1"
+  profile = "steve-cached-container-linux-install-vm2"
   selector {
 		mac = "08:00:27:FE:45:EF"
   }
@@ -87,9 +87,9 @@ resource "matchbox_group" "install-reboot-n1" {
   }
 }
 
-resource "matchbox_group" "install-reboot-n2" {
-	name = "install-reboot"
-	profile = "steve-cached-container-linux-install-vm2"
+resource "matchbox_group" "install-reboot-n1" {
+	name = "install-reboot-n1"
+	profile = "steve-cached-container-linux-install-n2"
 	selector {
 		mac = "00:22:19:8E:26:AC"
 	}

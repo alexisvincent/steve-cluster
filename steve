@@ -825,7 +825,7 @@ ignition() {
   else
     host=${1:-}
     mac=${2:-}
-    url="http://${host}:8080/ignition?mac=${mac//\:/-}&os=installed"
+    url="http://${host}:8080/ignition?mac=${mac//\:/-}&os=installing"
     echo "downloading ignition from $url to ./ignition.json..."
     curl -sS $url -f -o ./ignition.json
     echo "successfully aquired ignition.json"

@@ -89,7 +89,7 @@ resource "matchbox_group" "install-reboot-vm1" {
 
 resource "matchbox_group" "install-reboot-n1" {
 	name = "install-reboot-n1"
-	profile = "steve-cached-container-linux-install-n2"
+	profile = "steve-cached-container-linux-install-n1"
 	selector {
 		mac = "00:22:19:8E:26:AC"
 	}
@@ -103,13 +103,13 @@ resource "matchbox_group" "n1" {
   profile = "${matchbox_profile.gateway.name}"
   selector {
     mac = "00:22:19:8E:26:AC"
-    os = "installed"
+    os = "installing"
   }
   metadata {
     ssh_authorized_key = "${var.ssh_authorized_key}"
     hostname = "n1"
-    interface_internal = "eno2"
-    interface_external = "eno1"
+    interface_internal = "enp0s3"
+    interface_external = "enp0s8"
     address_internal = "10.10.1.1"
   }
 }

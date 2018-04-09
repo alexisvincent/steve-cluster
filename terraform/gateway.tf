@@ -44,7 +44,7 @@ data "template_file" "cl_gateway" {
           dhcp-host=00:1E:C9:D0:AA:9E,10.10.1.5
           dhcp-host=00:22:19:8E:26:B6,10.10.1.6
           dhcp-host=00:22:19:8E:25:A1,10.10.1.7
-          dhcp-host=00:1E:C9:D0:9E:E4,10.10.1.8
+          dhcp-host=00:22:19:8E:26:00,10.10.1.8
           dhcp-host=00:1E:C9:D0:AA:BC,10.10.1.9
           dhcp-host=00:1A:A0:15:E3:76,10.10.1.10
           dhcp-host=00:1D:09:05:9A:C0,10.10.1.11
@@ -103,13 +103,13 @@ resource "matchbox_group" "n1" {
   profile = "${matchbox_profile.gateway.name}"
   selector {
     mac = "00:22:19:8E:26:AC"
-    os = "installing"
+    os = "installed"
   }
   metadata {
     ssh_authorized_key = "${var.ssh_authorized_key}"
     hostname = "n1"
-    interface_internal = "eno1"
-    interface_external = "eno2"
+    interface_internal = "eno2"
+    interface_external = "eno1"
     address_internal = "10.10.1.1"
   }
 }

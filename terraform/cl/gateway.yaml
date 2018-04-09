@@ -16,7 +16,7 @@ passwd:
   users:
     - name: core
       password_hash: "$6$rounds=4096$LP6daiKkb6c$MGeaex639HmrfnglLpYsxPPruEovlzmkqgvbrouiDmv9XH/zEo7rM9ja/y9ur89OveohZ8VUf8NbdgjGRyEOi1"
-      ssh_authorized_keys: ""
+      
 
 storage:
   files:

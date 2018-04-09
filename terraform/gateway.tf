@@ -108,8 +108,8 @@ resource "matchbox_group" "n1" {
   metadata {
     ssh_authorized_key = "${var.ssh_authorized_key}"
     hostname = "n1"
-    interface_internal = "enp0s3"
-    interface_external = "enp0s8"
+    interface_internal = "eno1"
+    interface_external = "eno2"
     address_internal = "10.10.1.1"
   }
 }

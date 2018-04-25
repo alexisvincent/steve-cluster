@@ -107,7 +107,7 @@ resource "matchbox_group" "n1" {
   }
   metadata {
     ssh_authorized_key = "${var.ssh_authorized_key}"
-    hostname = "n1"
+    hostname = "n1.steve"
     interface_internal = "eno2"
     interface_external = "eno1"
     address_internal = "10.10.1.1"
@@ -124,7 +124,7 @@ resource "matchbox_group" "vm1" {
   }
   metadata {
     ssh_authorized_key = "${var.ssh_authorized_key}"
-    hostname = "vm1"
+    hostname = "vm1.steve"
     interface_internal = "enp0s3"
     interface_external = "enp0s8"
     address_internal = "10.10.10.1"

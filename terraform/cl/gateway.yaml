@@ -99,6 +99,19 @@ systemd:
         [Install]
         WantedBy=multi-user.target
 
+    - name: ssh-agent.service
+      enable: true
+      contents: |
+        [Unit]
+        Description=Run ssh-agent
+
+        [Service]
+        ExecStart=/usr/bin/ssh-agent
+        Restart=always
+
+        [Install]
+        WantedBy=multi-user.target
+
     - name: matchbox.service
       enable: true
       contents: |

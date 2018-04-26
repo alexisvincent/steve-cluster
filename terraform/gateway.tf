@@ -25,6 +25,7 @@ data "template_file" "cl_gateway" {
           address=/n11.${var.network_domain}/10.10.1.11
           address=/n12.${var.network_domain}/10.10.1.12
           address=/n13.${var.network_domain}/10.10.1.13
+          address=/n14.${var.network_domain}/10.10.1.14
 
           address=/vm1.${var.network_domain}/10.10.10.1
           address=/vm2.${var.network_domain}/10.10.10.2
@@ -50,6 +51,7 @@ data "template_file" "cl_gateway" {
           dhcp-host=00:1D:09:05:9A:C0,10.10.1.11
           dhcp-host=00:1A:A0:26:DA:B6,10.10.1.12
           dhcp-host=00:1D:09:05:98:DC,10.10.1.13
+          dhcp-host=78:2B:CB:55:54:25,10.10.1.14
 
           dhcp-host=00:0C:29:90:A9:F3,10.10.10.1
           dhcp-host=00:50:56:30:35:90,10.10.10.2

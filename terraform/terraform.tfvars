@@ -11,7 +11,7 @@ container_linux_channel = "stable"
 controller_names = ["n2"]
 controller_macs = ["00:1E:4F:28:30:12"]
 controller_domains = ["n2.steve"]
-worker_names = ["n3","n4","n5","n6","n7","n8","n9","n11","n12","n13"]
+worker_names = ["n3","n4","n5","n6","n7","n8","n9","n10","n11","n12","n13","n14"]
 worker_macs = [
     "00:22:19:AB:7E:78",
     "00:22:19:8E:15:77",
@@ -20,12 +20,13 @@ worker_macs = [
     "00:22:19:8E:25:A1",
     "00:22:19:8E:26:00",
     "00:1E:C9:D0:AA:BC",
-#    "00:1A:A0:15:E3:76",
+    "00:1A:A0:15:E3:76",
     "00:1D:09:05:9A:C0",
     "00:1A:A0:26:DA:B6",
-    "00:1D:09:05:98:DC"
+    "00:1D:09:05:98:DC",
+    "78:2B:CB:55:54:25"
     ]
-worker_domains = ["n3.steve","n4.steve","n5.steve","n6.steve","n7.steve","n8.steve","n9.steve","n11.steve","n12.steve","n13.steve"]
+worker_domains = ["n3.steve","n4.steve","n5.steve","n6.steve","n7.steve","n8.steve","n9.steve","n10.steve","n11.steve","n12.steve","n13.steve","n14.steve"]
 
 # Testing VMs; comment above and uncomment here to setup local cluster
 # controller_names = ["vm2"]

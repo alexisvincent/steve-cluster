@@ -1,8 +1,4 @@
-eval `ssh-agent`
 ssh-keygen -f /home/core/.ssh/id_rsa
-
-ssh-add ~/.ssh/id_rsa
-ssh-add -L
 
 sed 's/^/ssh_authorized_key = "/;s/$/"/' -i /home/core/.ssh/id_rsa.pub
 awk 'NR==FNR { a[n++]=$0; next } 

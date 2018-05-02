@@ -1,0 +1,96 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: {{ template "fullname" . }}
+  namespace: {{ .Values.service.namespace }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  template:
+    metadata:
+      name: {{ template "fullname" . }}
+      labels:
+        app: {{ template "name" . }}
+        chart: {{ template "chart" . }}
+        heritage: {{ .Release.Service }}
+        release: {{ .Release.Name }}
+    spec:
+      hostPID: true
+      hostNetwork: true
+      {{- if .Values.rbacEnabled }}
+      serviceAccountName: {{ template "fullname" . }}
+      {{- end }}
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args:
+        - server
+        ports:
+        - containerPort: {{ .Values.service.internalPort }}
+          name: api
+        livenessProbe:
+          initialDelaySeconds: 30
+          failureThreshold: 3
+          httpGet:
+            path: /v1/health
+            port: api
+        readinessProbe:
+          initialDelaySeconds: 5
+          httpGet:
+            path: /v1/health
+            port: api
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+
+        env:
+        - name: HOSTNAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: JOIN
+          value: {{ required "ERROR: add \"--set cluster.join=<first node-name/ip-address>\". See README.md for details." .Values.cluster.join }}
+          # value: http://10.1.5.224:5705
+          # value: {{ template "fullname" . }}:5705,{{ .Values.firstNode }}:5705
+          # valueFrom:
+          #   secretKeyRef:
+          #     name: {{ template "fullname" . }}
+          #     key: clusterId
+        - name: ADVERTISE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: NAMESPACE
+          value: {{ .Values.service.namespace }}
+        {{- if .Values.cluster.sharedDir }}
+        - name: DEVICE_DIR
+          value: {{ .Values.cluster.sharedDir }}/devices
+        {{- end }}
+        volumeMounts:
+          - name: fuse
+            mountPath: /dev/fuse
+          - name: state
+            mountPath: /var/lib/storageos
+            mountPropagation: Bidirectional
+          {{- if .Values.cluster.sharedDir }}
+          - name: shared
+            mountPath: {{ .Values.cluster.sharedDir }}
+            mountPropagation: Bidirectional
+          {{- end }}
+        securityContext:
+          privileged: true
+          capabilities:
+            add:
+            - SYS_ADMIN
+      volumes:
+        - name: fuse
+          hostPath:
+            path: /dev/fuse
+        - name: state
+          hostPath:
+            path: /var/lib/storageos
+        {{- if .Values.cluster.sharedDir }}
+        - name: shared
+          hostPath:
+            path: {{ .Values.cluster.sharedDir }}
+        {{- end }}

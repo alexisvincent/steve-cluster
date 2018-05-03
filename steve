@@ -886,5 +886,76 @@ download_coreos() {
   curl https://raw.githubusercontent.com/coreos/matchbox/master/scripts/get-coreos | bash -s stable 1688.4.0 ./matchbox/assets
 }
 
+desc "setup_core" <<HEREDOC
+Usage:
+  ${_ME} setup_core
+
+Description:
+  download and setup terraform and helm
+HEREDOC
+setup_core() {
+  #Terraform
+  rm /home/core/.bin/terraform
+  wget -O /home/core/.bin/terraform.zip https://releases.hashicorp.com/terraform/0.11.7/terraform_0.11.7_linux_amd64.zip
+  unzip -p /home/core/.bin/terraform.zip > /home/core/.bin/terraform
+  rm /home/core/.bin/terraform.zip
+  chmod +x /home/core/.bin/terraform
+
+  #helm (for storageos)
+  rm /home/core/.bin/helm
+  wget -O /home/core/.bin/helm.tar.gz wget https://storage.googleapis.com/kubernetes-helm/helm-v2.9.0-linux-amd64.tar.gz
+  tar -zxvf /home/core/.bin/helm.tar.gz
+  rm /home/core/.bin/helm.tar.gz
+  mv /home/core/.bin/linux-amd64/helm /home/core/.bin/helm
+  rm -r /home/core/.bin/linux-amd64
+  chmod +x /home/core/.bin/helm
+  helm init 
+}
+
+desc "download_kubectl" <<HEREDOC
+Usage:
+  ${_ME} download_kubectl or download_kubectl <user>
+
+Description:
+  download kubectl to all or some users
+HEREDOC
+download_kubectl() {
+  curl -O https://storage.googleapis.com/kubernetes-release/release/v1.10.1/bin/linux/amd64/kubectl
+  if [[ ${#_COMMAND_ARGV[@]} = 1 ]];
+  then
+    for i in $(echo /home/*); do rm $i/.bin/kubectl && mkdir -p $i/.bin && cp ./kubectl $i/.bin/kubectl; done
+    for i in $(ls /home); do chown $i /home/$i/.bin/kubectl && chmod +x /home/$i/.bin/kubectl; done
+  else
+    user=${1:-}
+    rm /home/$user/.bin/kubectl && mkdir -p /home/$user/.bin && cp ./kubectl /home/$user/.bin/kubectl
+    chown $user /home/$user/.bin/kubectl && chmod +x /home/$user/.bin/kubectl
+  fi
+}
+
+desc "user_setup" <<HEREDOC
+Usage:
+  ${_ME} user_setup or user_setup <user>
+
+Description:
+  Setup user to interact with the cluser. Includes .bashrc file, kubectl and storageos.
+HEREDOC
+user_setup() {
+  curl -O https://storage.googleapis.com/kubernetes-release/release/v1.10.1/bin/linux/amd64/kubectl
+  curl -sSLo ./storageos https://github.com/storageos/go-cli/releases/download/0.10.0/storageos_linux_amd64
+  if [[ ${#_COMMAND_ARGV[@]} = 1 ]];
+  then
+    for i in $(echo /home/*); do rm $i/.bashrc && cp ./bashrc $i/.bashrc && mkdir $i/.bin; done
+    for i in $(echo /home/*); do rm $i/.bin/kubectl && rm $i/.bin/storageos && cp ./kubectl $i/.bin/kubectl && cp ./storageos $i/.bin/storageos; done
+    for i in $(ls /home); do chown $i /home/$i/.bin/kubectl && chmod +x /home/$i/.bin/kubectl && chmod +x /home/$i/.bin/storageos; done
+  else
+    user=${1:-}
+    rm /home/$user/.bashrc && cp ./bashrc /home/$user/.bashrc && mkdir /home/$user/.bin
+    rm /home/$user/.bin/kubectl && rm /home/$user/.bin/storageos && cp ./kubectl /home/$user/.bin/kubectl && cp ./storageos /home/$user/.bin/storageos
+    chown $user /home/$user/.bin/kubectl && chmod +x /home/$user/.bin/kubectl && chmod +x /home/$user/.bin/storageos
+  fi
+}
+
+
+
 # Call the `_main` function after everything has been defined.
 _main

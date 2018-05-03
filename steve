@@ -940,17 +940,18 @@ Description:
   Setup user to interact with the cluser. Includes .bashrc file, kubectl and storageos.
 HEREDOC
 user_setup() {
+  mkdir -p /home/core/temp
   curl -O https://storage.googleapis.com/kubernetes-release/release/v1.10.1/bin/linux/amd64/kubectl
-  curl -sSLo ./storageos https://github.com/storageos/go-cli/releases/download/0.10.0/storageos_linux_amd64
+  curl -sSLo /home/core/temp/storageos https://github.com/storageos/go-cli/releases/download/0.10.0/storageos_linux_amd64
   if [[ ${#_COMMAND_ARGV[@]} = 1 ]];
   then
-    for i in $(echo /home/*); do rm $i/.bashrc && cp ./bashrc $i/.bashrc && mkdir $i/.bin; done
-    for i in $(echo /home/*); do rm $i/.bin/kubectl && rm $i/.bin/storageos && cp ./kubectl $i/.bin/kubectl && cp ./storageos $i/.bin/storageos; done
+    for i in $(echo /home/*); do rm $i/.bashrc && cp ./bashrc $i/.bashrc && mkdir -p $i/.bin; done
+    for i in $(echo /home/*); do rm $i/.bin/kubectl && rm $i/.bin/storageos && cp ./kubectl $i/.bin/kubectl && cp /home/core/temp/storageos $i/.bin/storageos; done
     for i in $(ls /home); do chown $i /home/$i/.bin/kubectl && chmod +x /home/$i/.bin/kubectl && chmod +x /home/$i/.bin/storageos; done
   else
     user=${1:-}
-    rm /home/$user/.bashrc && cp ./bashrc /home/$user/.bashrc && mkdir /home/$user/.bin
-    rm /home/$user/.bin/kubectl && rm /home/$user/.bin/storageos && cp ./kubectl /home/$user/.bin/kubectl && cp ./storageos /home/$user/.bin/storageos
+    cp ./bashrc /home/$user/.bashrc && mkdir -p /home/$user/.bin
+    cp ./kubectl /home/$user/.bin/kubectl && cp /home/core/temp/storageos /home/$user/.bin/storageos
     chown $user /home/$user/.bin/kubectl && chmod +x /home/$user/.bin/kubectl && chmod +x /home/$user/.bin/storageos
   fi
 }

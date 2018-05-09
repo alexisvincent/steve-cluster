@@ -1,0 +1,35 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: <username>
+  namespace: users
+  labels:
+    app: user
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user
+  template:
+    metadata:
+      labels:
+        app: user
+    spec:
+      containers:
+      - name: <username>
+        image: localhost:5000/users/<username>
+        command: ["/usr/sbin/sshd", "-D"]
+        ports:
+        - containerPort: 22
+        volumeMounts:
+        - mountPath: /home/<username>
+          name: user-storage
+      volumes:
+      - name: user-storage
+        flexVolume:
+          driver: rook.io/rook
+          fsType: ceph
+          options:
+            fsName: registryfs
+            clusterNamespace: rook
+            path: /<username>

@@ -19,5 +19,4 @@ fi
 
 export PATH=$PATH:/home/core/.bin
 export KUBECONFIG=/opt/cluster-config/terraform/assets/auth/kubeconfig
-export STORAGEOS_USERNAME=storageos STORAGEOS_PASSWORD=storageos
-export STORAGEOS_HOST=10.10.1.3
+export PATH=$PATH:/opt/bin

@@ -937,22 +937,24 @@ Usage:
   ${_ME} user_setup or user_setup <user>
 
 Description:
-  Setup user to interact with the cluser. Includes .bashrc file, kubectl and storageos.
+  Setup user to interact with the cluser. Includes .bashrc file, kubectl and s3cmd.
 HEREDOC
 user_setup() {
   mkdir -p /home/core/temp
   curl -O https://storage.googleapis.com/kubernetes-release/release/v1.10.1/bin/linux/amd64/kubectl
-  curl -sSLo /home/core/temp/storageos https://github.com/storageos/go-cli/releases/download/0.10.0/storageos_linux_amd64
+#  curl -sSLo /home/core/temp/storageos https://github.com/storageos/go-cli/releases/download/0.10.0/storageos_linux_amd64
+  wget -O /home/core/temp/s3cmd.tar.gz https://sourceforge.net/projects/s3tools/files/s3cmd/2.0.1/s3cmd-2.0.1.tar.gz
+  tar xzf /home/core/temp/s3cmd.tar.gz -C /home/core/temp
   if [[ ${#_COMMAND_ARGV[@]} = 1 ]];
   then
     for i in $(echo /home/*); do rm $i/.bashrc && cp ./bashrc $i/.bashrc && mkdir -p $i/.bin; done
-    for i in $(echo /home/*); do rm $i/.bin/kubectl && rm $i/.bin/storageos && cp ./kubectl $i/.bin/kubectl && cp /home/core/temp/storageos $i/.bin/storageos; done
-    for i in $(ls /home); do chown $i /home/$i/.bin/kubectl && chmod +x /home/$i/.bin/kubectl && chmod +x /home/$i/.bin/storageos; done
+    for i in $(echo /home/*); do rm $i/.bin/kubectl && rm $i/.bin/s3cmd && rm -r $i/.bin/S3 && cp ./kubectl $i/.bin/kubectl && cp /home/core/temp/s3cmd-2.0.1/s3cmd $i/.bin/s3cmd && cp -r /home/core/temp/s3cmd-2.0.1/S3 $i/.bin/S3; done
+    for i in $(ls /home); do chown $i /home/$i/.bin/kubectl && chmod +x /home/$i/.bin/kubectl && chmod +x /home/$i/.bin/s3cmd; done
   else
     user=${1:-}
     cp ./bashrc /home/$user/.bashrc && mkdir -p /home/$user/.bin
-    cp ./kubectl /home/$user/.bin/kubectl && cp /home/core/temp/storageos /home/$user/.bin/storageos
-    chown $user /home/$user/.bin/kubectl && chmod +x /home/$user/.bin/kubectl && chmod +x /home/$user/.bin/storageos
+    cp ./kubectl /home/$user/.bin/kubectl && cp /home/core/temp/s3cmd-2.0.1/s3cmd /home/$user/.bin/s3cmd && cp -r /home/core/temp/s3cmd-2.0.1/S3 /home/$user/.bin/S3
+    chown $user /home/$user/.bin/kubectl && chmod +x /home/$user/.bin/kubectl && chmod +x /home/$user/.bin/s3cmd
   fi
 }
 

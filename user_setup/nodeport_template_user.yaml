@@ -1,0 +1,11 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: <username>-nodeport
+spec:
+  type: NodePort
+  ports:
+    - port: 22
+      nodePort: 30000
+  selector:
+    name: <username>

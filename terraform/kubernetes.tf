@@ -1,6 +1,6 @@
 // Self-hosted Kubernetes cluster
 module "kubernetes" {
-  source = "git::https://github.com/poseidon/typhoon//bare-metal/container-linux/kubernetes?ref=v1.10.1"
+  source = "git::https://github.com/poseidon/typhoon//bare-metal/container-linux/kubernetes?ref=v1.10.3"
 
 	providers = {
 		local = "local.default"
@@ -13,8 +13,8 @@ module "kubernetes" {
 
   matchbox_http_endpoint  = "${var.matchbox_http_endpoint}"
 
-  container_linux_channel = "${var.container_linux_channel}"
-  container_linux_version = "${var.container_linux_version}"
+  os_channel = "${var.container_linux_channel}"
+  os_version = "${var.container_linux_version}"
 
 	k8s_domain_name         = "${var.k8s_domain_name}"
 

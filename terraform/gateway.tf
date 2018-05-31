@@ -62,9 +62,9 @@ EOF
 
 resource "matchbox_profile" "gateway" {
   name = "gateway"
-  kernel = "/assets/coreos/${var.container_linux_version}/coreos_production_pxe.vmlinuz"
+  kernel = "/assets/coreos/${var.os_version}/coreos_production_pxe.vmlinuz"
   initrd = [
-    "/assets/coreos/${var.container_linux_version}/coreos_production_pxe_image.cpio.gz"
+    "/assets/coreos/${var.os_version}/coreos_production_pxe_image.cpio.gz"
   ]
 
   args = [

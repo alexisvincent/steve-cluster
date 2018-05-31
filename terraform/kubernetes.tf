@@ -13,8 +13,8 @@ module "kubernetes" {
 
   matchbox_http_endpoint  = "${var.matchbox_http_endpoint}"
 
-  os_channel = "${var.container_linux_channel}"
-  os_version = "${var.container_linux_version}"
+  os_channel = "${var.os_channel}"
+  os_version = "${var.os_version}"
 
 	k8s_domain_name         = "${var.k8s_domain_name}"
 

@@ -8,12 +8,12 @@ variable "matchbox_rpc_endpoint" {
   description = "Matchbox gRPC API endpoint, without the protocol (e.g. matchbox.example.com:8081)"
 }
 
-variable "container_linux_channel" {
+variable "os_channel" {
   type        = "string"
-  description = "Container Linux channel corresponding to the container_linux_version"
+  description = "os channel corresponding to the os_version"
 }
 
-variable "container_linux_version" {
+variable "os_version" {
   type        = "string"
   description = "Container Linux version of the kernel/initrd to PXE or the image to install"
 }

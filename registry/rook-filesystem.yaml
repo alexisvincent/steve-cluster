@@ -10,7 +10,19 @@ spec:
   dataPools:
     - erasureCoded:
        dataChunks: 2
-       codingChunks: 2
+       codingChunks: 1
   metadataServer:
     activeCount: 1
     activeStandby: true
+    placement:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: role
+              operator: In
+              values:
+              - mds-node
+      tolerations:
+      - key: mds-node
+        operator: Exists

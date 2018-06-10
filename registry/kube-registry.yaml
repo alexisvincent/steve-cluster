@@ -24,8 +24,8 @@ spec:
         image: registry:2
         resources:
           limits:
-            cpu: 2
-            memory: 8Gi
+            cpu: 4
+            memory: 16Gi
         env:
         - name: REGISTRY_HTTP_ADDR
           value: :5000

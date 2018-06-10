@@ -85,7 +85,7 @@ cd /opt/cluster-config
 ```
 Restart the vm --> this time it should boot coreOS from virtual disk and not optical disk.
 
-##!!!Everything from here till the next "!!!" needs work and should be read with caustion!!!
+## !!!Everything from here till the next "!!!" needs work and should be read with caustion!!!
 
 At this point you should be able to connect a gateway node to your machine running the VM and PXE-boot the node.
 
@@ -103,7 +103,7 @@ terraform apply
 wait for it to finish (Can take 20 min)
 ```
 
-##!!!You should be fine from here!!!
+## !!!You should be fine from here!!!
 
 ## Re-bootstrapping Steve when the gateway is already configured:
 ### From the gateway:

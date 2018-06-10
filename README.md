@@ -32,7 +32,7 @@ We're using the Typhoon Kubernetes distribution managed via Terraform, which int
 Where possible, infrastructure is controlled with Terraform.
 
 ## Bootstap the cluster
-To start:
+### To start:
 Spawn up a coreos vm from an optical disk, with enough memory, 3GB might be alright.
 
 Set its network settings:
@@ -47,18 +47,111 @@ Name=enp0s3 # the local network interface
 Address=10.10.0.1/16
 ```
 
-then reload network settings
+Then reload network settings
 `sudo systemctl restart systemd-networkd`
 
 Set a password for the instance
 sudo passwd core
 
-then switch to ssh
+Run
+```
+git clone https://github.com/alexisvincent/steve-cluster-config.git
+mv steve-cluster-config cluster-config
+```
+Run `./steve push 10.10.0.1`
+
+Then switch to ssh
 ```
 ssh core@10.10.0.1
 ```
-go to your local copy of steve-config
-run `./steve push 10.10.0.1`
 
-on the ssh terminal run `./steve matchbox`
-on the ssh terminal cd to terraform and run `terraform init`
+On the ssh terminal:
+Generate new TLS certs and start matchbox
+```
+cd /opt/cluster-config/matchbox/etc/
+./generate-tls.sh
+cd /opt/cluster-config
+./steve matchbox
+```
+Download terraform and initalise node configs
+```
+cd /opt/cluster-config/terraform
+./terraform_dl.sh
+terraform init
+terraform apply (yes when prompted)
+stop process once you see "module.kubernetes.null_resource.copy-worker-secrets.3: Still creating... (10s elapsed)"
+cd /opt/cluster-config
+./steve ignition
+```
+Restart the vm --> this time it should boot coreOS from virtual disk and not optical disk.
+
+!!!Everything from here till the next "!!!" needs work and should be read with caustion!!!
+
+At this point you should be able to connect a gateway node to your machine running the VM and PXE-boot the node.
+
+Generate new ssh keys
+```
+cd /opt/cluster-config/terraform
+./genNewKeys.sh (with no passwd)
+```
+Start the ssh-agent and complete cluster bootstrap
+```
+cd /opt/cluster-config/terraform
+exec ssh-agent bash
+ssh-add ~/.ssh/id_rsa && ssh-add -L
+terraform apply
+wait for it to finish (Can take 20 min)
+```
+
+!!!You should be fine from here!!!
+
+## Re-bootstrapping Steve when the gateway is already configured:
+### From the gateway:
+`cd /opt`
+Remove the previous cluster config or just store it in a different backup folder to be deleted later.
+Then clone a fresh config from github
+```
+git clone https://github.com/alexisvincent/steve-cluster-config.git
+mv steve-cluster-config cluster-config
+```
+Generate new TLS certs
+```
+cd cluster-config/matchbox/etc
+./generate-tls.sh
+```
+Download coreOS
+```
+cd ../../
+./steve download_coreos
+```
+Downlaod kubectl (if not done before)
+`./steve download_kubectl`
+Generate new ssh keys
+```
+cd terraform
+./genNewKeys.sh (with no passwd)
+```
+Generate node config files
+```
+rm terraform.tfstate*
+terraform init
+sudo systemctl restart matchbox
+terraform apply (yes when prompted)
+stop process once you see "module.kubernetes.null_resource.copy-worker-secrets.3: Still creating... (10s elapsed)"
+```
+PXE-boot all the nodes (startup followed by f12). Ping each node (n2.steve -n14.steve) to check that they are up.
+Start the ssh-agent and complete cluster bootstrap
+```
+cd /opt/cluster-config/terraform
+exec ssh-agent bash
+ssh-add ~/.ssh/id_rsa && ssh-add -L
+terraform apply
+wait for it to finish (Can take 20 min)
+```
+If /opt/cluster-config/ does not contain assets.ready.processed then the following line is necessary should node 1 ever reboot.
+`touch /opt/cluster-config/assets.ready`
+Check that Kubernetes sees all the nodes. This might take a while (possibly 5 mins, but probably an hour)
+`watch -n1 kubectl get nodes`
+
+The cluster should now be fully bootstrapped and ready to go. Consider setting up the distributed storage (found in rook), the registry (found in registry) and heapster (for monitoring the cluster stats) next.
+

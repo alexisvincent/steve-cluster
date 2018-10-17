@@ -4,19 +4,18 @@ matchbox_rpc_endpoint = "10.10.0.1:8081"
 ssh_authorized_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7HL4M6s4J+0flGwennPxn9cpvEzFaCmFZJDFaFP+MtcJIDBHu+3G0wNMux/uBYkAXYyEeUAddlP2EBbkC5E5DbE/gIq2bvt4o+34rQmWklIFuNV3PbIml+Vc3zw2G+T4DmLreVPABT3d6FdFDok28xuy1xs9tSyv/aoTO5YSAvxAQakgSKyrwDcJyCyboQoHxEiWV9rwFJ65XPOio/E0j5I9Lxy4tIf1Hmg7xqTfCnO1xmwhxFrUvsAhDjlcGWw57irLhiQsDbW+zJ4vE1/O+BOtc4Cb+ZQK63IiXUvExJUWo2XiFzBxNJXtkQcSvePBqwRW0pR/D7oI6i0nhYYtb core@n1"
 
 cluster_name = "steve"
-os_version = "1745.4.0"
+os_version = "1800.4.0"
 os_channel = "coreos-stable"
 
 # Machines
 controller_names = ["n2"]
 controller_macs = ["00:1E:4F:28:30:12"]
 controller_domains = ["n2.steve"]
-worker_names = ["n3","n4","n5","n6","n7","n8","n9","n10","n11","n12","n13","n14"]
+worker_names = ["n3","n4","n5","n7","n8","n9","n10","n11","n12","n13","n14"]
 worker_macs = [
     "00:22:19:AB:7E:78",
     "00:22:19:8E:15:77",
     "00:1E:C9:D0:AA:9E",
-    "00:22:19:8E:26:B6",
     "00:22:19:8E:25:A1",
     "00:22:19:8E:26:00",
     "00:1E:C9:D0:AA:BC",
@@ -26,7 +25,7 @@ worker_macs = [
     "00:1D:09:05:98:DC",
     "78:2B:CB:55:54:25"
     ]
-worker_domains = ["n3.steve","n4.steve","n5.steve","n6.steve","n7.steve","n8.steve","n9.steve","n10.steve","n11.steve","n12.steve","n13.steve","n14.steve"]
+worker_domains = ["n3.steve","n4.steve","n5.steve","n7.steve","n8.steve","n9.steve","n10.steve","n11.steve","n12.steve","n13.steve","n14.steve"]
 
 # Testing VMs; comment above and uncomment here to setup local cluster
 # controller_names = ["vm2"]

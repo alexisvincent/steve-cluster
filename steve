@@ -883,7 +883,7 @@ Description:
   download coreos to assets
 HEREDOC
 download_coreos() {
-  curl https://raw.githubusercontent.com/coreos/matchbox/master/scripts/get-coreos | bash -s stable 1745.4.0 ./matchbox/assets
+  curl https://raw.githubusercontent.com/coreos/matchbox/master/scripts/get-coreos | bash -s stable 1967.3.0 ./matchbox/assets
 }
 
 desc "setup_core" <<HEREDOC

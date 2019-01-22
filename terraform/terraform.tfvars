@@ -1,10 +1,10 @@
 matchbox_http_endpoint = "http://10.10.0.1:8080"
 matchbox_rpc_endpoint = "10.10.0.1:8081"
 
-ssh_authorized_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7HL4M6s4J+0flGwennPxn9cpvEzFaCmFZJDFaFP+MtcJIDBHu+3G0wNMux/uBYkAXYyEeUAddlP2EBbkC5E5DbE/gIq2bvt4o+34rQmWklIFuNV3PbIml+Vc3zw2G+T4DmLreVPABT3d6FdFDok28xuy1xs9tSyv/aoTO5YSAvxAQakgSKyrwDcJyCyboQoHxEiWV9rwFJ65XPOio/E0j5I9Lxy4tIf1Hmg7xqTfCnO1xmwhxFrUvsAhDjlcGWw57irLhiQsDbW+zJ4vE1/O+BOtc4Cb+ZQK63IiXUvExJUWo2XiFzBxNJXtkQcSvePBqwRW0pR/D7oI6i0nhYYtb core@n1"
+ssh_authorized_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCqBYCTUAWRjIeCqWaUw1CDq6ARbt6pZoCJ3cW/GmADAU+JRaDDCg3Box+KZSLWK4dE7/762YnxDM5Tf9VLo2Trq+4cl5ZLaEl8oIeMfvpepuk6OOH38lZRUTudPV3FF1bUtn3Ph0rrNHny5p8J2H8lKOd+EQa+Q68nt5+Zqb9UlflOjVqLq3KHrJYWZ7/0x7QGPcMspR6A7q8YCyTl46J2vpfSwzPwt2yBDIdbsY3+7Y0qgiaSypdVdu5z9esTrfxFvgJkVlIMJuqNSzl3BJeJqSeQuL0oC5/O8or7xvfJhpBO8CK+VOBgQC0f9VPIyeTkFg6AypaWvPIX2W7x2VdJ core@n1"
 
 cluster_name = "steve"
-os_version = "1800.4.0"
+os_version = "1967.3.0"
 os_channel = "coreos-stable"
 
 # Machines

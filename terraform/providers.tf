@@ -5,6 +5,10 @@ provider "matchbox" {
   ca          = "${file("../matchbox/etc/tls/ca.crt")}"
 }
 
+provider "ct" {
+	version = "0.3.0"
+}
+
 provider "local" {
 	version = "~> 1.0"
 	alias = "default"

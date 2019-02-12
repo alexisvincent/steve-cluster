@@ -12,7 +12,7 @@ chmod +x /home/core/.bin/kubectl
 
 # Install Terraform
 rm /home/core/.bin/terraform
-wget -O /home/core/.bin/terraform.zip https://releases.hashicorp.com/terraform/0.11.7/terraform_0.11.7_linux_amd64.zip
+wget -O /home/core/.bin/terraform.zip https://releases.hashicorp.com/terraform/0.11.11/terraform_0.11.11_linux_amd64.zip
 unzip -p /home/core/.bin/terraform.zip > /home/core/.bin/terraform
 rm /home/core/.bin/terraform.zip
 chmod +x /home/core/.bin/terraform

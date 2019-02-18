@@ -13,15 +13,3 @@ spec:
   metadataServer:
     activeCount: 1
     activeStandby: true
-    placement:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-          - matchExpressions:
-            - key: role
-              operator: In
-              values:
-              - mds-node
-      tolerations:
-      - key: mds-node
-        operator: Exists

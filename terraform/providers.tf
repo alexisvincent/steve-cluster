@@ -1,4 +1,5 @@
 provider "matchbox" {
+  version     = "0.2.3"
   endpoint    = "${var.matchbox_rpc_endpoint}"
   client_cert = "${file("../matchbox/etc/tls/client.crt")}"
   client_key  = "${file("../matchbox/etc/tls/client.key")}"
@@ -6,7 +7,7 @@ provider "matchbox" {
 }
 
 provider "ct" {
-	version = "0.3.0"
+	version = "0.3.1"
 }
 
 provider "local" {
